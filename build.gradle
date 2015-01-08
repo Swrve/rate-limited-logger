@@ -1,0 +1,51 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
+    compile group: 'com.google.guava', name: 'guava', version: '15.0'
+    compile group: 'joda-time', name: 'joda-time', version: '2.3'
+    compile group: 'findbugs', name: 'annotations', version: '1.0.0'
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.2'
+
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
+
+}
+
+// ---------------------------------------------------------------------------
+
+apply plugin: 'findbugs'
+
+// http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
+findbugs {
+    toolVersion = "2.0.3"
+    effort = "max"
+    reportLevel = "high"
+    ignoreFailures = false
+    ext.maxHeapSize = "200m"
+}
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true // gimme something I can read!
+    }
+}
+
+// checking test classes for FindBugs isn't all that useful
+findbugsTest.enabled = false
+
+// ---------------------------------------------------------------------------
+
+apply plugin: 'jacoco'
+
+task all(dependsOn: [
+        test, findbugsMain, jacocoTestReport
+    ]) << { }
+
