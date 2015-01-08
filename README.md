@@ -55,18 +55,17 @@ RateLimitedLog object to log both, and a high rate of one will not cause the
 other to be suppressed as a side effect.
 
 However, this means that if you wish to include dynamic, variable data in the
-log output, you will need to use printf-style templates, instead of ("foo " +
+log output, you will need to use SLF4J-style templates, instead of ("foo " +
 bar + " baz") string interpolation. For example:
 
 ```
-  rateLimitedLog.info("Just saw an event of type %d: %s", event.getType(), event);
+  rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
 ```
 
-java.util.Formatter is used to perform template interpolation.  "%s" will
-implicitly invoke an object's toString() method, so toString() does not need to
-be called explicitly when logging.  (This has obvious performance benefits, in
-that those toString() methods will not be called at all once the rate limits
-have been exceeded or if the log-level threshold isn't reached.)
+"{}" will implicitly invoke an object's toString() method, so toString() does
+not need to be called explicitly when logging.  (This has obvious performance
+benefits, in that those toString() methods will not be called at all once the
+rate limits have been exceeded or if the log-level threshold isn't reached.)
 
 A RateLimitedLog object has a limited capacity for the number of log messages
 it'll hold; if over 1000 different strings are used as the message template for
@@ -87,6 +86,8 @@ then avoid a ConcurrentHashMap lookup.
 - SLF4J API 1.7.7
 - Guava 15.0
 - Joda-Time 2.3
+- Findbugs Annotations 1.0.0
+- Findbugs JSR-305 Annotations 2.0.2
 
 
 ## License
