@@ -1,4 +1,4 @@
-package com.swrve.logging;
+package com.swrve.ratelimitedlogger;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Ticker;
@@ -244,11 +244,11 @@ public class RateLimitedLogTest {
 
     private Stopwatch createStopwatch(final AtomicLong mockTime) {
         return Stopwatch.createUnstarted(new Ticker() {
-                @Override
-                public long read() {
-                    return mockTime.get();
-                }
-            });
+            @Override
+            public long read() {
+                return mockTime.get();
+            }
+        });
     }
 
 }

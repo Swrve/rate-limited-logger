@@ -1,4 +1,4 @@
-package com.swrve.logging;
+package com.swrve.ratelimitedlogger;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;

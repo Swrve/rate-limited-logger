@@ -1,4 +1,4 @@
-package com.swrve.logging;
+package com.swrve.ratelimitedlogger;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.jcip.annotations.ThreadSafe;

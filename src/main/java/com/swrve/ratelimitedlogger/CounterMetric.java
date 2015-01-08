@@ -1,4 +1,4 @@
-package com.swrve.logging;
+package com.swrve.ratelimitedlogger;
 
 /**
  * An interface used to implement the target for RateLimitedLogWithPattern#withMetrics(), allowing
