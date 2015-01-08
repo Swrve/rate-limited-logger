@@ -8,7 +8,6 @@ import org.junit.Test;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.google.common.base.CharMatcher.isNot;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
@@ -61,9 +60,9 @@ public class RateLimitedLogTest {
         assertThat(logger.infoMessageCount, equalTo(0));
 
         mockTime.set(1L);
-        rateLimitedLog.info("rateLimited %d", 1);
+        rateLimitedLog.info("rateLimited {}", 1);
         mockTime.set(2L);
-        rateLimitedLog.info("rateLimited %d", 2);
+        rateLimitedLog.info("rateLimited {}", 2);
 
         // the second message should have been suppressed
         assertThat(logger.infoMessageCount, equalTo(1));
@@ -94,13 +93,13 @@ public class RateLimitedLogTest {
         assertThat(logger.infoMessageCount, equalTo(0));
 
         mockTime.set(1L);
-        rateLimitedLog.info("rateLimitingNonZeroRateAndAllThresholds %d", 1);
+        rateLimitedLog.info("rateLimitingNonZeroRateAndAllThresholds {}", 1);
         mockTime.set(2L);
-        rateLimitedLog.debug("rateLimitingNonZeroRateAndAllThresholds %d", 2);
+        rateLimitedLog.debug("rateLimitingNonZeroRateAndAllThresholds {}", 2);
         mockTime.set(498L);
-        rateLimitedLog.warn("rateLimitingNonZeroRateAndAllThresholds %d", 3);
+        rateLimitedLog.warn("rateLimitingNonZeroRateAndAllThresholds {}", 3);
         mockTime.set(499L);
-        rateLimitedLog.trace("rateLimitingNonZeroRateAndAllThresholds %d", 5);
+        rateLimitedLog.trace("rateLimitingNonZeroRateAndAllThresholds {}", 5);
 
         assertThat(logger.infoMessageCount, equalTo(1));
         assertThat(logger.debugMessageCount, equalTo(1));
@@ -137,13 +136,13 @@ public class RateLimitedLogTest {
         assertThat(logger.infoMessageCount, equalTo(0));
 
         mockTime.set(1L);
-        rateLimitedLog.info("multiplePeriods %d", 1);
+        rateLimitedLog.info("multiplePeriods {}", 1);
         mockTime.set(2L);
-        rateLimitedLog.info("multiplePeriods %d", 2);
+        rateLimitedLog.info("multiplePeriods {}", 2);
         mockTime.set(3L);
-        rateLimitedLog2.info("multiplePeriods2 %d", 1);
+        rateLimitedLog2.info("multiplePeriods2 {}", 1);
         mockTime.set(4L);
-        rateLimitedLog2.info("multiplePeriods2 %d", 2);
+        rateLimitedLog2.info("multiplePeriods2 {}", 2);
 
         // the second message should have been suppressed
         assertThat(logger.infoMessageCount, equalTo(2));
@@ -209,8 +208,7 @@ public class RateLimitedLogTest {
         assertThat(line2, not(equalTo(null)));
     }
 
-    // when using MessageFormat instead of Formatter, logs of integers were being formatted with
-    // silly localised formats like "10,000" instead of "10000".
+    // Ensure we won't see silly localised formats like "10,000" instead of "10000".
     //
     @Test
     public void testLocaleIgnored() {
@@ -223,8 +221,8 @@ public class RateLimitedLogTest {
                 .build();
 
         mockTime.set(1L);
-        rateLimitedLog.info("locale %d", 10000);
-        assertThat((String) logger.infoLastMessage.get(), equalTo("locale 10000"));
+        rateLimitedLog.info("locale {}", 10000);
+        assertThat(logger.infoLastMessage.get(), equalTo("locale 10000"));
     }
 
     // Ensure that the out-of-cache-capacity logic doesn't lose data.
@@ -240,7 +238,7 @@ public class RateLimitedLogTest {
 
         for (int i = 0; i < RateLimitedLog.MAX_PATTERNS_PER_LOG + 2; i++) {
             rateLimitedLog.info("cache " + i);
-            assertThat((String) logger.infoLastMessage.get(), equalTo("cache " + i)); // no loss
+            assertThat(logger.infoLastMessage.get(), equalTo("cache " + i)); // no loss
         }
     }
 

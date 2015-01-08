@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Supplier;
 import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 
@@ -29,15 +28,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Each log message has its own internal rate limiting counter.  In other words, if you have 2 log messages, you can
  * safely reuse the same RateLimitedLog object to log both, and the rate of one will not caused the other to
  * be suppressed as a side effect. However, this means that if you wish to include dynamic, variable data in the log
- * output, you will need to use printf-style templates, instead of ("foo " + bar + " baz") string interpolation.
+ * output, you will need to use SLF4J-style templates, instead of ("foo " + bar + " baz") string interpolation.
  * For example:
  * <p/>
  * <pre>
- *    rateLimitedLog.info("Just saw an event of type %d: %s", event.getType(), event);
+ *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
  * </pre>
  * <p/>
- * This uses java.util.Formatter.  "%s" will implicitly invoke an object's toString() method, so toString()
- * does not need to be called explicitly when logging.  (This has obvious performance benefits, in that
+ * "{}" will implicitly invoke an object's toString() method, so toString() does not need
+ * to be called explicitly when logging.  (This has obvious performance benefits, in that
  * those toString() methods will not be called at all once the rate limits have been exceeded.)
  * <p/>
  * Where performance is critical, note that you can obtain a reference to the RateLimitedLogWithPattern object
@@ -70,7 +69,7 @@ public class RateLimitedLog {
     private final Optional<CounterMetric> stats;
 
     /**
-     * Start building a new RateLimitedLog, wrapping the Apache Commons logger @param logger.
+     * Start building a new RateLimitedLog, wrapping the SLF4J logger @param logger.
      */
     public static RateLimitedLogBuilder.MissingRateAndPeriod withRateLimit(Logger logger) {
         return new RateLimitedLogBuilder.MissingRateAndPeriod(Preconditions.checkNotNull(logger));
@@ -88,11 +87,11 @@ public class RateLimitedLog {
     /**
      * logging APIs.
      * <p/>
-     * These use the printf style of templating, using java.util.Formatter, to parameterize the Logs.
-     * See http://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html .
+     * These can use the SLF4J style of templating to parameterize the Logs.
+     * See http://www.slf4j.org/api/org/slf4j/helpers/MessageFormatter.html .
      * <p/>
      * <pre>
-     *    rateLimitedLog.info("Just saw an event of type %s: %s", event.getType(), event);
+     *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
      * </pre>
      *
      * @param template the format string

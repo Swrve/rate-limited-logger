@@ -8,9 +8,6 @@ import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.joda.time.Duration;
 
-import java.util.Formatter;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,46 +49,46 @@ public class RateLimitedLogWithPattern {
     /**
      * logging APIs.
      * <p/>
-     * These use the printf style of templating, using java.util.Formatter, to parameterize the Logs.
-     * See http://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html .
+     * These can use the SLF4J style of templating to parameterize the Logs.
+     * See http://www.slf4j.org/api/org/slf4j/helpers/MessageFormatter.html .
      * <p/>
      * <pre>
-     *    rateLimitedLog.info("Just saw an event of type %s: %s", event.getType(), event);
+     *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
      * </pre>
      *
      * @param args the varargs list of arguments matching the message template
      */
     public void trace(Object... args) {
         if (!isRateLimited(args)) {
-            logger.trace(formatLine(args));
+            logger.trace(message, args);
         }
         incrementStats("trace");
     }
 
     public void debug(Object... args) {
         if (!isRateLimited(args)) {
-            logger.debug(formatLine(args));
+            logger.debug(message, args);
         }
         incrementStats("debug");
     }
 
     public void info(Object... args) {
         if (!isRateLimited(args)) {
-            logger.info(formatLine(args));
+            logger.info(message, args);
         }
         incrementStats("info");
     }
 
     public void warn(Object... args) {
         if (!isRateLimited(args)) {
-            logger.warn(formatLine(args));
+            logger.warn(message, args);
         }
         incrementStats("warn");
     }
 
     public void error(Object... args) {
         if (!isRateLimited(args)) {
-            logger.error(formatLine(args));
+            logger.error(message, args);
         }
         incrementStats("error");
     }
@@ -101,7 +98,7 @@ public class RateLimitedLogWithPattern {
         if (count < rateAndPeriod.maxRate) {
             return false;
         } else if (count == rateAndPeriod.maxRate) {
-            haveJustExceededRateLimit(args);
+            haveJustExceededRateLimit();
             return false;
         } else {
             return true;
@@ -127,17 +124,11 @@ public class RateLimitedLogWithPattern {
         rateLimitedAt = Optional.absent();
     }
 
-    private synchronized void haveJustExceededRateLimit(Object... args) {
+    private synchronized void haveJustExceededRateLimit() {
         // record the last line we log, so we have something to say the rate-limited
         // lines were similar to
-        rateLimitLine = Optional.of(formatLine(args));
+        rateLimitLine = Optional.of(message);
         rateLimitedAt = Optional.of(stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    }
-
-    private String formatLine(Object... args) {
-        StringBuilder sb = new StringBuilder();
-        new Formatter(sb, Locale.US).format(message, args);
-        return sb.toString();
     }
 
     /**

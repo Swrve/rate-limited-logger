@@ -4,12 +4,13 @@ import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * An implementation of Logger suitable for the rate-limited log unit tests
  */
-public class MockLogger implements Logger {
-    private static Logger logger = LoggerFactory.getLogger(MockLogger.class);
+class MockLogger implements Logger {
+    private static final Logger logger = LoggerFactory.getLogger(MockLogger.class);
     public int infoMessageCount;
     public int debugMessageCount;
     public int warnMessageCount;
@@ -39,8 +40,8 @@ public class MockLogger implements Logger {
     }
 
     @Override
-    public void debug(String format, Object... arguments) {
-        throw new IllegalStateException("not supported");
+    public void debug(String msg, Object... arguments) {
+        debug(MessageFormatter.arrayFormat(msg, arguments).getMessage());
     }
 
     @Override
@@ -100,8 +101,8 @@ public class MockLogger implements Logger {
     }
 
     @Override
-    public void error(String format, Object... arguments) {
-        throw new IllegalStateException("not supported");
+    public void error(String msg, Object... arguments) {
+        error(MessageFormatter.arrayFormat(msg, arguments).getMessage());
     }
 
     @Override
@@ -162,8 +163,8 @@ public class MockLogger implements Logger {
     }
 
     @Override
-    public void info(String format, Object... arguments) {
-        throw new IllegalStateException("not supported");
+    public void info(String msg, Object... arguments) {
+        info(MessageFormatter.arrayFormat(msg, arguments).getMessage());
     }
 
     @Override
@@ -228,8 +229,8 @@ public class MockLogger implements Logger {
     }
 
     @Override
-    public void trace(String format, Object... arguments) {
-        throw new IllegalStateException("not supported");
+    public void trace(String msg, Object... arguments) {
+        trace(MessageFormatter.arrayFormat(msg, arguments).getMessage());
     }
 
     @Override
@@ -284,8 +285,8 @@ public class MockLogger implements Logger {
     }
 
     @Override
-    public void warn(String format, Object... arguments) {
-        throw new IllegalStateException("not supported");
+    public void warn(String msg, Object... arguments) {
+        warn(MessageFormatter.arrayFormat(msg, arguments).getMessage());
     }
 
     @Override
