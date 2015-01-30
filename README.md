@@ -82,7 +82,9 @@ then avoid a ConcurrentHashMap lookup.
 
 ## Dependencies
 
-- Java 1.6, or later
+All versions are minimum versions -- later versions should also work fine.
+
+- Java 1.6
 - SLF4J API 1.7.7
 - Guava 15.0
 - Joda-Time 2.3
