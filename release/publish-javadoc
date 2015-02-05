@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# release/publish-javadoc -- builds and pushes the generated javadoc to the Github Pages site
+
+set -exu
+
+./gradlew javadoc
+
+rm -rf build/gh-pages
+git clone --quiet --branch=gh-pages git@github.com:Swrve/rate-limited-logger.git build/gh-pages
+cd build/gh-pages
+
+git rm -rf javadoc
+
+cp -R ../docs/javadoc javadoc
+
+git add -f javadoc
+git commit -m "Rebuild javadoc"
+git push -fq origin gh-pages
+

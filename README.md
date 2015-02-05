@@ -38,6 +38,8 @@ into existing Java code.
 This will wrap an existing SLF4J Logger object, allowing a max of 10 messages
 to be output every 10 seconds, suppressing any more than that.  
 
+Javadoc: http://swrve.github.io/rate-limited-logger/javadoc/
+
 
 ## Sample output
 
