@@ -1,10 +1,7 @@
 RateLimitedLogger [![CircleCI badge](https://circleci.com/gh/Swrve/rate-limited-logger.svg?style=svg&circle-token=a2d7a24d30021fc04658b58c24c1758e891e66fc)](https://circleci.com/gh/Swrve/rate-limited-logger)
 ========
 
-# What is it?
-
-RateLimitedLogger is an SLF4J-compatible, simple, fluent API for rate-limited
-logging in Java.
+An SLF4J-compatible, simple, fluent API for rate-limited logging in Java.
 
 Logging is vital for production-ready, operable code; however, in certain
 situations, it can be dangerous.  It is easy to wipe out throughput of a
