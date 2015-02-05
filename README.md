@@ -1,7 +1,5 @@
-RateLimitedLogger
+RateLimitedLogger [![CircleCI badge](https://circleci.com/gh/Swrve/rate-limited-logger.svg?style=svg&circle-token=a2d7a24d30021fc04658b58c24c1758e891e66fc)](https://circleci.com/gh/Swrve/rate-limited-logger)
 ========
-
-[![Build Status](https://circleci.com/gh/Swrve/rate-limited-logger.svg?style=svg&circle-token=a2d7a24d30021fc04658b58c24c1758e891e66fc)](https://circleci.com/gh/Swrve/rate-limited-logger)
 
 # What is it?
 
@@ -98,7 +96,7 @@ All versions are minimum versions -- later versions should also work fine.
 
 ## License
 
-(c) Copyright 2014-2015 Swrve Mobile Inc or its licensors. 
+(c) Copyright 2014-2015 Swrve Mobile Inc or its licensors.
 Distributed under version 2.0 of the Apache License, see "LICENSE".
 
 
