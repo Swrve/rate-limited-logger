@@ -1,16 +1,20 @@
+RateLimitedLogger
+========
+
+[![Build Status](https://circleci.com/gh/Swrve/rate-limited-logger.svg?style=svg&circle-token=a2d7a24d30021fc04658b58c24c1758e891e66fc)](https://circleci.com/gh/Swrve/rate-limited-logger)
 
 # What is it?
 
-RateLimitedLog is an SLF4J-compatible, simple, fluent API for rate-limited
+RateLimitedLogger is an SLF4J-compatible, simple, fluent API for rate-limited
 logging in Java.
 
 Logging is vital for production-ready, operable code; however, in certain
 situations, it can be dangerous.  It is easy to wipe out throughput of a
 performance-critical backend component by several orders of magnitude with a 
 misplaced log call, or if the input data suddenly changes to something
-slightly unexpected, triggering a log call in a performance hotspot.
+slightly unexpected, triggering disk I/O in a performance hotspot.
 
-With RateLimitedLog, however, this risk is avoided.  A RateLimitedLog object
+With RateLimitedLogger, however, this risk is avoided.  A RateLimitedLog object
 imposes an efficient rate limit internally, and will efficiently suppress
 logging if this is exceeded.  When a log is suppressed, at the end of the limit
 period, another log message is output indicating how many logs were hidden.
@@ -19,9 +23,9 @@ This style of rate limiting is the same as the one used by UNIX syslog, so
 should be comprehensible, easy to predict, and familiar to many users, unlike
 more complex adaptive rate limits.
 
-The RateLimitedLog library is thread-safe.
+The RateLimitedLogger library is thread-safe.
 
-RateLimitedLog wraps your existing SLF4J loggers, so should be easy to plug
+RateLimitedLogger wraps your existing SLF4J loggers, so should be easy to plug
 into existing Java code.
 
 
@@ -44,7 +48,7 @@ to be output every 10 seconds, suppressing any more than that.
 22:16:03.584 [main] INFO  com.swrve.Demo - demo message 1
 22:16:03.604 [main] INFO  com.swrve.Demo - demo message 2
 22:16:03.634 [main] INFO  com.swrve.Demo - demo message 3
-22:16:04.986 [RateLimitedLogRegistry-0] INFO  com.swrve.Demo - (suppressed 39 logs similar to 'demo message 3' in PT1.0S)
+22:16:04.986 [RateLimitedLogRegistry-0] INFO  com.swrve.Demo - (suppressed 39 logs similar to 'demo message {}' in PT1.0S)
 
 
 ## Interpolation
@@ -94,7 +98,8 @@ All versions are minimum versions -- later versions should also work fine.
 
 ## License
 
-This module is released under version 2.0 of the Apache License.
+(c) Copyright 2014-2015 Swrve Mobile Inc or its licensors. 
+Distributed under version 2.0 of the Apache License, see "LICENSE".
 
 
 ## Building
@@ -107,5 +112,5 @@ This module is released under version 2.0 of the Apache License.
 ## Credits
 
 - The Swrve dev team: http://www.swrve.com/
-  Our blog: http://swrveengineering.wordpress.com/
+- Our blog: http://swrveengineering.wordpress.com/
 
