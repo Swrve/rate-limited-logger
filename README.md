@@ -26,6 +26,27 @@ into existing Java code.
 
 ## Usage
 
+
+Adding as a Maven dependency:
+
+```
+    <dependency>
+        <groupId>com.swrve</groupId>
+        <artifactId>rate-limited-logger</artifactId>
+        <version>1.0</version>
+    </dependency>
+```
+
+Or, in gradle terms:
+
+```
+    dependencies {
+        compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
+    }
+```
+
+Code example:
+
 ```
   private static final Logger logger = LoggerFactory.getLogger(getClass());
 
