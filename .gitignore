@@ -6,3 +6,4 @@
 *.iml
 hs_err_pid*
 build
+jmh-tests/target
