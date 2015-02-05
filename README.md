@@ -29,7 +29,8 @@ into existing Java code.
 ```
   private static final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private static final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
+  private static final RateLimitedLog rateLimitedLog = RateLimitedLog
+            .withRateLimit(logger)
             .maxRate(10).every(10, TimeUnit.SECONDS)
             .build();
 ```
@@ -40,11 +41,12 @@ to be output every 10 seconds, suppressing any more than that.
 
 ## Sample output
 
-22:16:03.584 [main] INFO  com.swrve.Demo - demo message 1
-22:16:03.604 [main] INFO  com.swrve.Demo - demo message 2
-22:16:03.634 [main] INFO  com.swrve.Demo - demo message 3
-22:16:04.986 [RateLimitedLogRegistry-0] INFO  com.swrve.Demo - (suppressed 39 logs similar to 'demo message {}' in PT1.0S)
-
+```
+  22:16:03.584 [main] INFO Demo - message 1
+  22:16:03.604 [main] INFO Demo - message 2
+  22:16:03.634 [main] INFO Demo - message 3
+  22:16:04.986 [RateLimitedLogRegistry-0] INFO Demo - (suppressed 39 logs similar to 'message {}' in PT1.0S)
+```
 
 ## Interpolation
 
