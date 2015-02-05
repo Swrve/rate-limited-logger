@@ -5,8 +5,8 @@ apply plugin: 'signing'
 group = 'com.swrve'
 archivesBaseName = 'rate-limited-logger'
 version = '1.0'
-ext.packaging = 'jar'
 
+ext.packaging = 'jar'
 sourceCompatibility = 1.6
 
 repositories {
