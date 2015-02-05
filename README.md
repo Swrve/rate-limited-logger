@@ -40,12 +40,10 @@ Adding as a Maven dependency:
 Or, in gradle terms:
 
 ```
-    dependencies {
-        compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
-    }
+    compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
 ```
 
-Code example:
+Code:
 
 ```
   private static final Logger logger = LoggerFactory.getLogger(getClass());
