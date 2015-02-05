@@ -15,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * <pre>
  *    private static final Logger logger = LoggerFactory.getLogger(getClass());
  *    private static final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
- *             .maxRate(10).every(10, TimeUnit.SECONDS)
+ *             .maxRate(5).every(Duration.standardSeconds(10))
  *             .build();
  * </pre>
  * <p/>
- * This will wrap an existing SLF4J Logger object, allowing a max of 10 messages to be output every 10 seconds,
+ * This will wrap an existing SLF4J Logger object, allowing a max of 5 messages to be output every 10 seconds,
  * suppressing any more than that.  When a log is suppressed, at the end of the 10-second period, another
  * log message is output indicating how many logs were hidden.  This style of rate limiting is the same as the
  * one used by UNIX syslog, so should be comprehensible, easy to predict, and familiar to many users, unlike

@@ -31,12 +31,12 @@ into existing Java code.
 
   private static final RateLimitedLog rateLimitedLog = RateLimitedLog
             .withRateLimit(logger)
-            .maxRate(10).every(10, TimeUnit.SECONDS)
+            .maxRate(5).every(Duration.standardSeconds(10))
             .build();
 ```
 
-This will wrap an existing SLF4J Logger object, allowing a max of 10 messages
-to be output every 10 seconds, suppressing any more than that.  
+This will wrap an existing SLF4J Logger object, allowing a max of 5 messages
+to be output every 10 seconds, suppressing any more than that.
 
 Javadoc: http://swrve.github.io/rate-limited-logger/javadoc/
 
