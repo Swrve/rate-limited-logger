@@ -78,9 +78,18 @@ template, and the current set of logs will be flushed in order to avoid an
 OutOfMemory condition.  This has a performance impact, but at least it won't
 lose data!
 
+
+## Performance
+
 Where performance is critical, note that you can obtain a reference to the
 RateLimitedLogWithPattern object for an individual log template, which will
 then avoid a ConcurrentHashMap lookup.
+
+In tests using JMH with Java 7 on a 2013 Macbook Air, the normal,
+non-RateLimitedLogWithPattern approach performed on average 46,708,458
+rate-limited log operations per second (which works out at about 21
+nanoseconds per op); RateLimitedLogWithPattern performed 65,634,369 log
+operations per second (about 15 nanoseconds per op).
 
 
 ## Dependencies

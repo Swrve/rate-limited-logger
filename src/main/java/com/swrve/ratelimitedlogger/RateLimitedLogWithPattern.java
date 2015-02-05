@@ -59,41 +59,41 @@ public class RateLimitedLogWithPattern {
      * @param args the varargs list of arguments matching the message template
      */
     public void trace(Object... args) {
-        if (!isRateLimited(args)) {
+        if (!isRateLimited()) {
             logger.trace(message, args);
         }
         incrementStats("trace");
     }
 
     public void debug(Object... args) {
-        if (!isRateLimited(args)) {
+        if (!isRateLimited()) {
             logger.debug(message, args);
         }
         incrementStats("debug");
     }
 
     public void info(Object... args) {
-        if (!isRateLimited(args)) {
+        if (!isRateLimited()) {
             logger.info(message, args);
         }
         incrementStats("info");
     }
 
     public void warn(Object... args) {
-        if (!isRateLimited(args)) {
+        if (!isRateLimited()) {
             logger.warn(message, args);
         }
         incrementStats("warn");
     }
 
     public void error(Object... args) {
-        if (!isRateLimited(args)) {
+        if (!isRateLimited()) {
             logger.error(message, args);
         }
         incrementStats("error");
     }
 
-    private boolean isRateLimited(Object... args) {
+    private boolean isRateLimited() {
         int count = counter.incrementAndGet();
         if (count < rateAndPeriod.maxRate) {
             return false;
