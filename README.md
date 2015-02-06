@@ -5,9 +5,9 @@ An SLF4J-compatible, simple, fluent API for rate-limited logging in Java.
 
 Logging is vital for production-ready, operable code; however, in certain
 situations, it can be dangerous.  It is easy to wipe out throughput of a
-performance-critical backend component by several orders of magnitude with a 
-misplaced log call, or if the input data suddenly changes to something
-slightly unexpected, triggering disk I/O in a performance hotspot.
+performance-critical backend component by several orders of magnitude with disk
+I/O in a performance hotspot, caused by a misplaced log call, or input data
+changing to something slightly unexpected.
 
 With RateLimitedLogger, however, this risk is avoided.  A RateLimitedLog object
 tracks the rate of log message emission, imposes an internal rate limit, and
@@ -25,10 +25,12 @@ RateLimitedLogger wraps your existing SLF4J loggers, so should be easy to plug
 into existing Java code.
 
 
-## Usage
+## Binaries:
 
+This module is available in the Maven Central repository at
+http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rate-limited-logger%22
 
-Add as a Maven dependency:
+Maven:
 
 ```
     <dependency>
@@ -38,13 +40,13 @@ Add as a Maven dependency:
     </dependency>
 ```
 
-Or, in Gradle:
+Gradle:
 
 ```
     compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
 ```
 
-Code:
+Sample code:
 
 ```
   private static final Logger logger = LoggerFactory.getLogger(getClass());
@@ -58,7 +60,10 @@ Code:
 This will wrap an existing SLF4J Logger object, allowing a max of 5 messages
 to be output every 10 seconds, suppressing any more than that.
 
-Javadoc: http://swrve.github.io/rate-limited-logger/javadoc/1.0/
+
+## More documentation
+
+Javadoc can be found at http://swrve.github.io/rate-limited-logger/javadoc/1.0/
 
 
 ## Sample output
@@ -131,6 +136,8 @@ Distributed under version 2.0 of the Apache License, see "LICENSE".
 
 
 ## Building
+
+Build all JARs, test, measure coverage:
 
 ```
   ./gradlew all
