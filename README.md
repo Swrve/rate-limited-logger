@@ -10,13 +10,14 @@ misplaced log call, or if the input data suddenly changes to something
 slightly unexpected, triggering disk I/O in a performance hotspot.
 
 With RateLimitedLogger, however, this risk is avoided.  A RateLimitedLog object
-imposes an efficient rate limit internally, and will efficiently suppress
-logging if this is exceeded.  When a log is suppressed, at the end of the limit
-period, another log message is output indicating how many logs were hidden.
+tracks the rate of log message emission, imposes an internal rate limit, and
+will efficiently suppress logging if this is exceeded.  When a log is
+suppressed, at the end of the limit period, another log message is output
+indicating how many log lines were suppressed.
 
-This style of rate limiting is the same as the one used by UNIX syslog, so
-should be comprehensible, easy to predict, and familiar to many users, unlike
-more complex adaptive rate limits.
+This style of rate limiting is the same as the one used by UNIX syslog; this
+means it should be comprehensible, easy to predict, and familiar to many users,
+unlike more complex adaptive rate limits.
 
 The RateLimitedLogger library is thread-safe.
 
