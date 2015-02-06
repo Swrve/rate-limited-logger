@@ -27,7 +27,7 @@ into existing Java code.
 ## Usage
 
 
-Adding as a Maven dependency:
+Add as a Maven dependency:
 
 ```
     <dependency>
@@ -37,7 +37,7 @@ Adding as a Maven dependency:
     </dependency>
 ```
 
-Or, in gradle terms:
+Or, in Gradle:
 
 ```
     compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
@@ -57,7 +57,7 @@ Code:
 This will wrap an existing SLF4J Logger object, allowing a max of 5 messages
 to be output every 10 seconds, suppressing any more than that.
 
-Javadoc: http://swrve.github.io/rate-limited-logger/javadoc/
+Javadoc: http://swrve.github.io/rate-limited-logger/javadoc/1.0/
 
 
 ## Sample output

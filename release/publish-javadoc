@@ -5,7 +5,10 @@
 set -exu
 
 ./gradlew clean
-./gradlew javadoc
+./gradlew javadoc jar
+
+version=$(ls build/libs/rate-limited-logger-*.jar \
+    | sed -e 's/^.*logger-//' -e 's/.jar//')
 
 # Annoying javadoc bug: it'll include these annotations in the output page! remove them
 sed -i '' \
@@ -18,8 +21,8 @@ git clone --quiet --branch=gh-pages git@github.com:Swrve/rate-limited-logger.git
 cd build/gh-pages
 
 git rm -rf javadoc
-
-cp -R ../docs/javadoc javadoc
+mkdir javadoc
+cp -R ../docs/javadoc javadoc/$version
 
 git add -f javadoc
 git commit -m "Rebuild javadoc"
