@@ -81,6 +81,46 @@ public class RateLimitedLogTest {
     }
 
     @Test
+    public void rateLimitingWorksTwice() throws InterruptedException {
+        MockLogger logger = new MockLogger();
+        final AtomicLong mockTime = new AtomicLong(0L);
+
+        RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
+                .maxRate(1).every(Duration.millis(500))
+                .withStopwatch(createStopwatch(mockTime))
+                .build();
+
+        assertThat(logger.infoMessageCount, equalTo(0));
+
+        mockTime.set(1L);
+        rateLimitedLog.info("rateLimitingWorks2 {}", 1);
+        mockTime.set(2L);
+        rateLimitedLog.info("rateLimitingWorks2 {}", 2);
+
+        // the second message should have been suppressed
+        assertThat(logger.infoMessageCount, equalTo(1));
+
+        Thread.sleep(1000L);
+        mockTime.set(601L);
+
+        // by now, we should have seen the "similar messages suppressed" message
+        assertThat(logger.infoMessageCount, equalTo(2));
+
+        rateLimitedLog.info("rateLimitingWorks2 {}", 3);
+        rateLimitedLog.info("rateLimitingWorks2 {}", 4);
+        rateLimitedLog.info("rateLimitingWorks2 {}", 5);
+
+        // should have suppressed 4 and 5
+        assertThat(logger.infoMessageCount, equalTo(3));
+
+        Thread.sleep(500L);
+        mockTime.set(1101L);
+
+        // should have seen a second "suppressed" message after 500ms
+        assertThat(logger.infoMessageCount, equalTo(4));
+    }
+
+    @Test
     public void rateLimitingNonZeroRateAndAllThresholds() throws InterruptedException {
         MockLogger logger = new MockLogger();
         final AtomicLong mockTime = new AtomicLong(0L);

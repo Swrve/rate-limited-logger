@@ -39,6 +39,7 @@ public class RateLimitedLogBuilder {
         private final int maxRate;
 
         private MissingPeriod(Logger logger, int rate) {
+            Preconditions.checkNotNull(logger);
             this.logger = logger;
             this.maxRate = rate;
         }
@@ -47,6 +48,7 @@ public class RateLimitedLogBuilder {
          * Specify the time period.  Required.
          */
         public RateLimitedLogBuilder every(Duration duration) {
+            Preconditions.checkNotNull(duration);
             return new RateLimitedLogBuilder(logger, maxRate, duration);
         }
     }
@@ -78,7 +80,7 @@ public class RateLimitedLogBuilder {
      */
     public RateLimitedLog build() {
         Preconditions.checkArgument(maxRate > 0, "maxRate must be > 0");
-        Preconditions.checkArgument(periodLength != null && periodLength.getMillis() > 0L, "period must be non-zero");
+        Preconditions.checkArgument(periodLength.getMillis() > 0L, "period must be non-zero");
         stopwatch.start();
         return new RateLimitedLog(logger, new RateLimitedLogWithPattern.RateAndPeriod(maxRate, periodLength), stopwatch, stats, RateLimitedLog.REGISTRY);
     }

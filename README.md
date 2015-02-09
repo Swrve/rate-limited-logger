@@ -19,10 +19,16 @@ This style of rate limiting is the same as the one used by UNIX syslog; this
 means it should be comprehensible, easy to predict, and familiar to many users,
 unlike more complex adaptive rate limits.
 
-The RateLimitedLogger library is thread-safe.
-
 RateLimitedLogger wraps your existing SLF4J loggers, so should be easy to plug
 into existing Java code.
+
+
+## Thread-Safety
+
+The RateLimitedLogger library is thread-safe.  Under heavy load, though, it is
+possible for more log messages to be exceeded than the limit specifies, for a
+short period after the limit is exceeded (typically on the order of a duration
+of a few milliseconds).
 
 
 ## Binaries:
@@ -33,17 +39,17 @@ http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rate-limited-logger%22
 Maven:
 
 ```
-    <dependency>
-        <groupId>com.swrve</groupId>
-        <artifactId>rate-limited-logger</artifactId>
-        <version>1.0</version>
-    </dependency>
+  <dependency>
+      <groupId>com.swrve</groupId>
+      <artifactId>rate-limited-logger</artifactId>
+      <version>1.0</version>
+  </dependency>
 ```
 
 Gradle:
 
 ```
-    compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
+  compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
 ```
 
 Sample code:

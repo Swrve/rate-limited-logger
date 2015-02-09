@@ -3,6 +3,8 @@ package com.swrve.ratelimitedlogger;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.jcip.annotations.ThreadSafe;
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.*;
@@ -12,6 +14,8 @@ import java.util.concurrent.*;
  */
 @ThreadSafe
 class Registry {
+    private static final Logger logger = LoggerFactory.getLogger(Registry.class);
+
     private final ConcurrentHashMap<Duration, ConcurrentHashMap<RateLimitedLogWithPattern, Boolean>> registry
             = new ConcurrentHashMap<Duration, ConcurrentHashMap<RateLimitedLogWithPattern, Boolean>>();
 
@@ -53,7 +57,12 @@ class Registry {
             resetScheduler.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
-                    resetAllCounters(finalLogLinesForPeriod);
+                    try {
+                        resetAllCounters(finalLogLinesForPeriod);
+                    } catch (Exception e) {
+                        logger.warn("failed to reset counters: " + e, e);
+                        // but carry on in the next iteration
+                    }
                 }
             }, period.getMillis(), period.getMillis(), TimeUnit.MILLISECONDS);
         }

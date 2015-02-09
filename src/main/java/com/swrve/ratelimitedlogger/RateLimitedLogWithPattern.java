@@ -1,15 +1,16 @@
 package com.swrve.ratelimitedlogger;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
-import org.slf4j.Logger;
 import org.joda.time.Duration;
+import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * An individual log pattern - the unit of rate limiting.  Each object is rate-limited individually.
@@ -18,6 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @ThreadSafe
 public class RateLimitedLogWithPattern {
+    private static final long NOT_RATE_LIMITED_YET = 0L;
+
     private final String message;
     private final RateAndPeriod rateAndPeriod;
     private final Logger logger;
@@ -30,13 +33,10 @@ public class RateLimitedLogWithPattern {
     private final AtomicInteger counter = new AtomicInteger(0); // mutable
 
     /**
-     * When we exceed the rate limit during a period, we record when, and with what message, it occurred for the
-     * subsequent "(suppressed N messages)" log.
+     * When we exceed the rate limit during a period, we record when.  If the rate limit has not been exceeded, the
+     * magic value of NOT_RATE_LIMITED_YET will be recorded.
      */
-    @GuardedBy("this")
-    private Optional<String> rateLimitLine = Optional.absent(); // mutable
-    @GuardedBy("this")
-    private Optional<Long> rateLimitedAt = Optional.absent(); // mutable
+    private final AtomicLong rateLimitedAt = new AtomicLong(NOT_RATE_LIMITED_YET); // mutable
 
     RateLimitedLogWithPattern(String message, RateAndPeriod rateAndPeriod, Optional<CounterMetric> stats, Stopwatch stopwatch, Logger logger) {
         this.message = message;
@@ -94,12 +94,23 @@ public class RateLimitedLogWithPattern {
     }
 
     private boolean isRateLimited() {
+
+        // note: this method is not synchronized, for performance.  If we exceed the maxRate, we will start checking
+        // haveExceededLimit, and if that's still false, we enter the synchronized haveJustExceededRateLimit() method.
+        //
+        // There is still potential for a race -- the rate of incrementing could be so high that we are already
+        // over the maxRate by the time the reset thread runs, but the haveJustExceededRateLimit() hasn't yet been
+        // run in this thread. In this scenario, we will fail to notice that we are over the limit, but when
+        // the next iteration runs, we will correctly report the correct number of suppressions and the time
+        // when haveJustExceededRateLimit() eventually got to execute.  We will also potentially log a small
+        // number more lines to the logger than the rate limit allows.
+        //
         int count = counter.incrementAndGet();
         if (count < rateAndPeriod.maxRate) {
             return false;
-        } else if (count == rateAndPeriod.maxRate) {
+        } else if (count >= rateAndPeriod.maxRate && rateLimitedAt.get() == NOT_RATE_LIMITED_YET) {
             haveJustExceededRateLimit();
-            return false;
+            return false; // we still issue this final log, though
         } else {
             return true;
         }
@@ -109,26 +120,34 @@ public class RateLimitedLogWithPattern {
      * Reset the counter and suppression details, if necessary.  This is called once every period, by the Registry.
      */
     synchronized void periodicReset() {
+        long whenLimited = rateLimitedAt.getAndSet(NOT_RATE_LIMITED_YET);
+        if (whenLimited != NOT_RATE_LIMITED_YET) {
+            reportSuppression(whenLimited);
+        }
+    }
+
+    @GuardedBy("this")
+    private void reportSuppression(long whenLimited) {
         int count = counter.get();
         counter.addAndGet(-count);
-
-        if (count > rateAndPeriod.maxRate) {
-            Preconditions.checkState(rateLimitLine.isPresent());
-            Preconditions.checkState(rateLimitedAt.isPresent());
-            int numSuppressed = count - rateAndPeriod.maxRate;
-            Duration howLong = new Duration(rateLimitedAt.get(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
-            logger.info("(suppressed " + numSuppressed + " logs similar to '" + rateLimitLine.get() + "' in " + howLong + ")");
+        int numSuppressed = count - rateAndPeriod.maxRate;
+        if (numSuppressed == 0) {
+            return;  // special case: we hit the rate limit, but did not actually exceed it -- nothing got suppressed, so there's no need to log
         }
-
-        rateLimitLine = Optional.absent();
-        rateLimitedAt = Optional.absent();
+        Duration howLong = new Duration(whenLimited, elapsedMsecs());
+        logger.info("(suppressed " + numSuppressed + " logs similar to '" + message + "' in " + howLong + ")");
     }
 
     private synchronized void haveJustExceededRateLimit() {
-        // record the last line we log, so we have something to say the rate-limited
-        // lines were similar to
-        rateLimitLine = Optional.of(message);
-        rateLimitedAt = Optional.of(stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        rateLimitedAt.set(elapsedMsecs());
+    }
+
+    private long elapsedMsecs() {
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        if (elapsed == NOT_RATE_LIMITED_YET) {
+            elapsed++;  // avoid using the magic value by "rounding up"
+        }
+        return elapsed;
     }
 
     /**
@@ -153,7 +172,7 @@ public class RateLimitedLogWithPattern {
      * RateAndPeriods are not significant.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         return (message.equals(((RateLimitedLogWithPattern) o).message));
