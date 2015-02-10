@@ -13,6 +13,15 @@ repositories {
     mavenCentral()
 }
 
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'net.ltgt.gradle:gradle-errorprone-plugin:latest.release'
+  }
+}
+
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
     compile group: 'joda-time', name: 'joda-time', version: '2.3'
@@ -27,6 +36,7 @@ dependencies {
 
 // ---------------------------------------------------------------------------
 
+apply plugin: 'errorprone'
 apply plugin: 'findbugs'
 
 // http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
