@@ -106,7 +106,7 @@ lose data!
 
 In tests using JMH with Java 7 on a 2012 Macbook Pro, using RateLimitedLog with
 a string key (ie. the typical usage) ran in, on average, 68 nanoseconds per op,
-with a P99.99 of 14887 ns/op.
+with a P99.99 of 8000 ns/op.
 
 Where performance is critical, note that you can obtain a reference to the
 RateLimitedLogWithPattern object for an individual log template, which will
@@ -115,7 +115,7 @@ then avoid a ConcurrentHashMap lookup.
 Using this approach, the average time dropped to 56 nanoseconds per op, with a
 P99.99 of 4519 ns/op.
 
-Full results at: jmh-tests/README.md .
+More details: https://github.com/Swrve/rate-limited-logger/tree/master/jmh-tests
 
 
 ## Thread-Safety
@@ -155,6 +155,6 @@ Build all JARs, test, measure coverage:
 
 ## Credits
 
-- The Swrve dev team: http://www.swrve.com/
-- Our blog: http://swrveengineering.wordpress.com/
+- The Swrve team: http://www.swrve.com/
+- Our dev blog: http://swrveengineering.wordpress.com/
 

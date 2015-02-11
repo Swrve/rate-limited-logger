@@ -36,10 +36,11 @@ dependencies {
 
 // ---------------------------------------------------------------------------
 
-apply plugin: 'errorprone'
-apply plugin: 'findbugs'
+// https://github.com/tbroyer/gradle-errorprone-plugin
+/// apply plugin: 'errorprone'
 
 // http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
+apply plugin: 'findbugs'
 findbugs {
     toolVersion = "2.0.3"
     effort = "max"
