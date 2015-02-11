@@ -23,14 +23,6 @@ RateLimitedLogger wraps your existing SLF4J loggers, so should be easy to plug
 into existing Java code.
 
 
-## Thread-Safety
-
-The RateLimitedLogger library is thread-safe.  Under heavy load, though, it is
-possible for more log messages to be exceeded than the limit specifies, for a
-short period after the limit is exceeded (typically on the order of a duration
-of a few milliseconds).
-
-
 ## Binaries:
 
 This module is available in the Maven Central repository at
@@ -112,15 +104,26 @@ lose data!
 
 ## Performance
 
+In tests using JMH with Java 7 on a 2012 Macbook Pro, using RateLimitedLog with
+a string key (ie. the typical usage) ran in, on average, 68 nanoseconds per op,
+with a P99.99 of 14887 ns/op.
+
 Where performance is critical, note that you can obtain a reference to the
 RateLimitedLogWithPattern object for an individual log template, which will
 then avoid a ConcurrentHashMap lookup.
 
-In tests using JMH with Java 7 on a 2013 Macbook Air, the normal,
-non-RateLimitedLogWithPattern approach performed on average 46,708,458
-rate-limited log operations per second (which works out at about 21
-nanoseconds per op); RateLimitedLogWithPattern performed 65,634,369 log
-operations per second (about 15 nanoseconds per op).
+Using this approach, the average time dropped to 56 nanoseconds per op, with a
+P99.99 of 4519 ns/op.
+
+Full results at: jmh-tests/README.md .
+
+
+## Thread-Safety
+
+The RateLimitedLogger library is thread-safe.  Under heavy load, though, it is
+possible for more log messages to be exceeded than the limit specifies, for a
+short period after the limit is exceeded (typically on the order of a duration
+of a few milliseconds).
 
 
 ## Dependencies
