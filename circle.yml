@@ -1,0 +1,18 @@
+machine:
+  environment:
+    # Disable gradle fancy single line output
+    TERM: dumb
+general:
+  artifacts:
+    # Store test HTML reports
+    - build/reports
+dependencies:
+  override:
+    # compileTestJava to ensure that we are downloading
+    # and caching as many dependencies as possible
+    - ./gradlew dependencies compileTestJava
+test:
+  post:
+    # Copy the test metadata to the reports folder
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex "./build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
