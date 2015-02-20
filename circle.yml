@@ -12,6 +12,8 @@ dependencies:
     # and caching as many dependencies as possible
     - ./gradlew dependencies compileTestJava
 test:
+  override:
+    - ./gradlew all
   post:
     # Copy the test metadata to the reports folder
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
