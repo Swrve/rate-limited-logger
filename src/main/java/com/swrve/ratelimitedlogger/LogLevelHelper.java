@@ -5,7 +5,17 @@ import org.slf4j.Logger;
 class LogLevelHelper {
 
     public static enum Level {
-        TRACE, DEBUG, INFO, WARN, ERROR
+
+        TRACE("trace"), DEBUG("debug"), INFO("info"), WARN("warn"), ERROR("error");
+        private final String levelName;
+
+        Level(String levelName) {
+            this.levelName = levelName;
+        }
+
+        public String getLevelName() {
+            return levelName;
+        }
     }
 
     private LogLevelHelper() {

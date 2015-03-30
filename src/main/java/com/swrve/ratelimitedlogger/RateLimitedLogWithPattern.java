@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import static com.swrve.ratelimitedlogger.LogLevelHelper.Level;
 
 /**
- * An individual log pattern - the unit of rate limiting.  Each object is rate-limited individually.
- * <p>
+ * An individual log pattern - the unit of rate limiting.  Each object is rate-limited individually but with separation on the log level.
+ * <p/>
  * These objects are thread-safe.
  */
 @ThreadSafe
@@ -34,9 +34,9 @@ public class RateLimitedLogWithPattern {
     private final Stopwatch stopwatch;
 
     /**
-     * Number of observed logs in the current time period.
+     * Number of observed logs in the current time period based on the log level.
      */
-    private final ConcurrentMap<Level, AtomicLong> levelCounters = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Level, AtomicLong> levelCounters = new ConcurrentHashMap<Level, AtomicLong>();
 
     /**
      * When we exceed the rate limit during a period, we record when.  If the rate limit has not been exceeded, the
@@ -54,10 +54,10 @@ public class RateLimitedLogWithPattern {
 
     /**
      * logging APIs.
-     * <p>
+     * <p/>
      * These can use the SLF4J style of templating to parameterize the Logs.
      * See http://www.slf4j.org/api/org/slf4j/helpers/MessageFormatter.html .
-     * <p>
+     * <p/>
      * <pre>
      *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
      * </pre>
@@ -111,11 +111,14 @@ public class RateLimitedLogWithPattern {
         // when haveJustExceededRateLimit() eventually got to execute.  We will also potentially log a small
         // number more lines to the logger than the rate limit allows.
         //
+
+        // Simple levelCounters.putIfAbsent could be used here but guard with check is really faster as avoids internal checks in putIfAbsent.
         AtomicLong counter = levelCounters.get(level);
         if (counter == null) {
             levelCounters.putIfAbsent(level, new AtomicLong(0L));
             counter = levelCounters.get(level);
         }
+
         long count = counter.incrementAndGet();
         if (count < rateAndPeriod.maxRate) {
             return false;
@@ -170,7 +173,7 @@ public class RateLimitedLogWithPattern {
      * Increment a counter metric called "{level}_rate_limited_log_count", where "{level}" is the log
      * level in question.  This is still performed even when a log is rate limited, since incrementing
      * a counter metric is cheap!
-     * <p>
+     * <p/>
      * This deliberately doesn't attempt to use counter metrics named after the log message, since
      * extracting that without making a mess is complex, and if that's desired, it's easy enough
      * for calling code to do it instead.  As an "early warning" indicator that lots of logging
@@ -180,7 +183,7 @@ public class RateLimitedLogWithPattern {
         if (!stats.isPresent()) {
             return;
         }
-        stats.get().increment(level.name() + RATE_LIMITED_COUNT_SUFFIX);
+        stats.get().increment(level.getLevelName() + RATE_LIMITED_COUNT_SUFFIX);
     }
 
     /**
