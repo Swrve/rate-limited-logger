@@ -82,6 +82,8 @@ public class RateLimitedLogBuilder {
         Preconditions.checkArgument(maxRate > 0, "maxRate must be > 0");
         Preconditions.checkArgument(periodLength.getMillis() > 0L, "period must be non-zero");
         stopwatch.start();
-        return new RateLimitedLog(logger, new RateLimitedLogWithPattern.RateAndPeriod(maxRate, periodLength), stopwatch, stats, RateLimitedLog.REGISTRY);
+        return new RateLimitedLog(logger,
+                new RateLimitedLogWithPattern.RateAndPeriod(maxRate, periodLength), stopwatch,
+                stats, RateLimitedLog.REGISTRY);
     }
 }

@@ -141,15 +141,29 @@ public class RateLimitedLog {
         }
 
         // slow path: create a RateLimitedLogWithPattern
-        RateLimitedLogWithPattern newValue = new RateLimitedLogWithPattern(message, rateAndPeriod, stats, stopwatch, logger);
+        RateLimitedLogWithPattern newValue = new RateLimitedLogWithPattern(message, rateAndPeriod, registry, stats, stopwatch, logger);
         RateLimitedLogWithPattern oldValue = knownPatterns.putIfAbsent(message, newValue);
         if (oldValue != null) {
             return oldValue;
         } else {
-            // ensure we'll reset the counter once every period
-            registry.register(newValue, rateAndPeriod.periodLength);
             return newValue;
         }
+    }
+
+    /**
+     * @return a LogWithPatternAndLevel object for the supplied @param message and
+     * @param level .  This can be cached and reused by callers in performance-sensitive
+     * cases to avoid performing two ConcurrentHashMap lookups.
+     * <p/>
+     * Note that the string is the sole key used, so the same string cannot be reused with differing period
+     * settings; any periods which differ from the first one used are ignored.
+     * <p/>
+     * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
+     * in any one period; if this happens, it's probable that an already-interpolated string is
+     * accidentally being used as a log pattern.
+     */
+    public LogWithPatternAndLevel get(String pattern, Level level) {
+        return get(pattern).get(level);
     }
 
     /**
