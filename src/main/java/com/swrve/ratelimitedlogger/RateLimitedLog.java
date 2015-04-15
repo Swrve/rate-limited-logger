@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
+import org.slf4j.Marker;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * The RateLimitedLog objects are thread-safe.
  */
 @ThreadSafe
-public class RateLimitedLog {
+public class RateLimitedLog implements Logger {
     /**
      * A singleton registry of rate-limited logs, so we can reset them periodically
      */
@@ -84,37 +85,308 @@ public class RateLimitedLog {
         this.stopwatch = stopwatch;
     }
 
-    /**
-     * logging APIs.
-     * <p/>
-     * These can use the SLF4J style of templating to parameterize the Logs.
-     * See http://www.slf4j.org/api/org/slf4j/helpers/MessageFormatter.html .
-     * <p/>
-     * <pre>
-     *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
-     * </pre>
-     *
-     * @param template the format string
-     * @param args     the list of arguments matching the template
-     */
-    public void trace(String template, Object... args) {
-        get(template).trace(args);
+    @Override
+    public String getName() {
+        return logger.getName();
     }
 
-    public void debug(String template, Object... args) {
-        get(template).debug(args);
+    @Override
+    public boolean isTraceEnabled() {
+        return logger.isTraceEnabled();
     }
 
-    public void info(String template, Object... args) {
-        get(template).info(args);
+    @Override
+    public void trace(String msg) {
+        get(msg).trace(msg);
     }
 
-    public void warn(String template, Object... args) {
-        get(template).warn(args);
+    @Override
+    public void trace(String format, Object arg) {
+        get(format).trace(arg);
     }
 
-    public void error(String template, Object... args) {
-        get(template).error(args);
+    @Override
+    public void trace(String format, Object arg1, Object arg2) {
+        get(format).trace(arg1, arg2);
+    }
+
+    @Override
+    public void trace(String format, Object... arguments) {
+        get(format).trace(arguments);
+    }
+
+    @Override
+    public void trace(String msg, Throwable t) {
+        get(msg).trace(t);
+    }
+
+    @Override
+    public boolean isTraceEnabled(Marker marker) {
+        return logger.isTraceEnabled(marker);
+    }
+
+    @Override
+    public void trace(Marker marker, String msg) {
+        get(msg).trace(marker, msg);
+    }
+
+    @Override
+    public void trace(Marker marker, String format, Object arg) {
+        get(format).trace(marker, arg);
+    }
+
+    @Override
+    public void trace(Marker marker, String format, Object arg1, Object arg2) {
+        get(format).trace(marker, arg1, arg2);
+    }
+
+    @Override
+    public void trace(Marker marker, String format, Object... argArray) {
+        get(format).trace(marker, argArray);
+    }
+
+    @Override
+    public void trace(Marker marker, String msg, Throwable t) {
+        get(msg).trace(marker, t);
+    }
+
+    @Override
+    public boolean isDebugEnabled() {
+        return logger.isDebugEnabled();
+    }
+
+    @Override
+    public void debug(String msg) {
+        get(msg).debug(msg);
+    }
+
+    @Override
+    public void debug(String format, Object arg) {
+        get(format).debug(arg);
+    }
+
+    @Override
+    public void debug(String format, Object arg1, Object arg2) {
+        get(format).debug(arg1, arg2);
+    }
+
+    @Override
+    public void debug(String format, Object... arguments) {
+        get(format).debug(arguments);
+    }
+
+    @Override
+    public void debug(String msg, Throwable t) {
+        get(msg).debug(t);
+    }
+
+    @Override
+    public boolean isDebugEnabled(Marker marker) {
+        return logger.isDebugEnabled(marker);
+    }
+
+    @Override
+    public void debug(Marker marker, String msg) {
+        get(msg).debug(marker, msg);
+    }
+
+    @Override
+    public void debug(Marker marker, String format, Object arg) {
+        get(format).debug(marker, arg);
+    }
+
+    @Override
+    public void debug(Marker marker, String format, Object arg1, Object arg2) {
+        get(format).debug(marker, arg1, arg2);
+    }
+
+    @Override
+    public void debug(Marker marker, String format, Object... argArray) {
+        get(format).debug(marker, argArray);
+    }
+
+    @Override
+    public void debug(Marker marker, String msg, Throwable t) {
+        get(msg).debug(marker, t);
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return logger.isInfoEnabled();
+    }
+
+    @Override
+    public void info(String msg) {
+        get(msg).info(msg);
+    }
+
+    @Override
+    public void info(String format, Object arg) {
+        get(format).info(arg);
+    }
+
+    @Override
+    public void info(String format, Object arg1, Object arg2) {
+        get(format).info(arg1, arg2);
+    }
+
+    @Override
+    public void info(String format, Object... arguments) {
+        get(format).info(arguments);
+    }
+
+    @Override
+    public void info(String msg, Throwable t) {
+        get(msg).info(t);
+    }
+
+    @Override
+    public boolean isInfoEnabled(Marker marker) {
+        return logger.isInfoEnabled(marker);
+    }
+
+    @Override
+    public void info(Marker marker, String msg) {
+        get(msg).info(marker, msg);
+    }
+
+    @Override
+    public void info(Marker marker, String format, Object arg) {
+        get(format).info(marker, arg);
+    }
+
+    @Override
+    public void info(Marker marker, String format, Object arg1, Object arg2) {
+        get(format).info(marker, arg1, arg2);
+    }
+
+    @Override
+    public void info(Marker marker, String format, Object... argArray) {
+        get(format).info(marker, argArray);
+    }
+
+    @Override
+    public void info(Marker marker, String msg, Throwable t) {
+        get(msg).info(marker, t);
+    }
+    @Override
+    public boolean isWarnEnabled() {
+        return logger.isWarnEnabled();
+    }
+
+    @Override
+    public void warn(String msg) {
+        get(msg).warn(msg);
+    }
+
+    @Override
+    public void warn(String format, Object arg) {
+        get(format).warn(arg);
+    }
+
+    @Override
+    public void warn(String format, Object arg1, Object arg2) {
+        get(format).warn(arg1, arg2);
+    }
+
+    @Override
+    public void warn(String format, Object... arguments) {
+        get(format).warn(arguments);
+    }
+
+    @Override
+    public void warn(String msg, Throwable t) {
+        get(msg).warn(t);
+    }
+
+    @Override
+    public boolean isWarnEnabled(Marker marker) {
+        return logger.isWarnEnabled(marker);
+    }
+
+    @Override
+    public void warn(Marker marker, String msg) {
+        get(msg).warn(marker, msg);
+    }
+
+    @Override
+    public void warn(Marker marker, String format, Object arg) {
+        get(format).warn(marker, arg);
+    }
+
+    @Override
+    public void warn(Marker marker, String format, Object arg1, Object arg2) {
+        get(format).warn(marker, arg1, arg2);
+    }
+
+    @Override
+    public void warn(Marker marker, String format, Object... argArray) {
+        get(format).warn(marker, argArray);
+    }
+
+    @Override
+    public void warn(Marker marker, String msg, Throwable t) {
+        get(msg).warn(marker, t);
+    }
+
+    @Override
+    public boolean isErrorEnabled() {
+        return logger.isErrorEnabled();
+    }
+
+    @Override
+    public void error(String msg) {
+        get(msg).error(msg);
+    }
+
+    @Override
+    public void error(String format, Object arg) {
+        get(format).error(arg);
+    }
+
+    @Override
+    public void error(String format, Object arg1, Object arg2) {
+        get(format).error(arg1, arg2);
+    }
+
+    @Override
+    public void error(String format, Object... arguments) {
+        get(format).error(arguments);
+    }
+
+    @Override
+    public void error(String msg, Throwable t) {
+        get(msg).error(t);
+    }
+
+    @Override
+    public boolean isErrorEnabled(Marker marker) {
+        return logger.isErrorEnabled(marker);
+    }
+
+    @Override
+    public void error(Marker marker, String msg) {
+        get(msg).error(marker, msg);
+    }
+
+    @Override
+    public void error(Marker marker, String format, Object arg) {
+        get(format).error(marker, arg);
+    }
+
+    @Override
+    public void error(Marker marker, String format, Object arg1, Object arg2) {
+        get(format).error(marker, arg1, arg2);
+    }
+
+    @Override
+    public void error(Marker marker, String format, Object... argArray) {
+        get(format).error(marker, argArray);
+    }
+
+    @Override
+    public void error(Marker marker, String msg, Throwable t) {
+        get(msg).error(marker, t);
     }
 
     /**
