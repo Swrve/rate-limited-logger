@@ -134,6 +134,9 @@ public class RateLimitedLogTest {
 
         mockTime.set(1L);
         rateLimitedLog.info("rateLimitingNonZeroRateAndAllThresholds {}", 1);
+        rateLimitedLog.info("rateLimitingNonZeroRateAndAllThresholds {}", 1);
+        rateLimitedLog.info("rateLimitingNonZeroRateAndAllThresholds {}", 1);
+        rateLimitedLog.info("rateLimitingNonZeroRateAndAllThresholds {}", 1);
         mockTime.set(2L);
         rateLimitedLog.debug("rateLimitingNonZeroRateAndAllThresholds {}", 2);
         mockTime.set(498L);
@@ -141,17 +144,17 @@ public class RateLimitedLogTest {
         mockTime.set(499L);
         rateLimitedLog.trace("rateLimitingNonZeroRateAndAllThresholds {}", 5);
 
-        assertThat(logger.infoMessageCount, equalTo(1));
+        assertThat(logger.infoMessageCount, equalTo(3));
         assertThat(logger.debugMessageCount, equalTo(1));
         assertThat(logger.warnMessageCount, equalTo(1));
         assertThat(logger.errorMessageCount, equalTo(0));
-        assertThat(logger.traceMessageCount, equalTo(0));
+        assertThat(logger.traceMessageCount, equalTo(1));
 
         Thread.sleep(600L);
         mockTime.set(600L);
 
         // zeroing the counter should produce a "similar messages suppressed" message
-        assertThat(logger.infoMessageCount, equalTo(2));
+        assertThat(logger.infoMessageCount, equalTo(4));
 
         // and now we should be able to log a message
         rateLimitedLog.error("rateLimitingNonZeroRateAndAllThresholds {0}", 1);
@@ -246,6 +249,44 @@ public class RateLimitedLogTest {
         RateLimitedLogWithPattern line2 = rateLimitedLog.get("testGet");
         assertThat(line2, equalTo(line));
         assertThat(line2, not(equalTo(null)));
+
+        RateLimitedLogWithPattern line3 = rateLimitedLog.get("testGet2");
+        assertThat(line3, not(equalTo(line)));
+        assertThat(line3, not(equalTo(null)));
+
+        assertThat(line2.hashCode(), equalTo(line.hashCode()));
+        assertThat(line2.hashCode(), not(equalTo(line3.hashCode())));
+    }
+
+    @Test
+    public void testGetWithLevel() {
+        MockLogger logger = new MockLogger();
+        final AtomicLong mockTime = new AtomicLong(0L);
+
+        RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
+                .maxRate(1).every(Duration.millis(10))
+                .withStopwatch(createStopwatch(mockTime))
+                .build();
+
+        LogWithPatternAndLevel line = rateLimitedLog.get("testGet", Level.INFO);
+
+        assertThat(logger.infoMessageCount, equalTo(0));
+
+        mockTime.set(1L);
+        line.log();
+
+        assertThat(logger.infoMessageCount, equalTo(1));
+
+        LogWithPatternAndLevel line2 = rateLimitedLog.get("testGet", Level.INFO);
+        assertThat(line2, equalTo(line));
+        assertThat(line2, not(equalTo(null)));
+
+        LogWithPatternAndLevel line3 = rateLimitedLog.get("testGet", Level.TRACE);
+        assertThat(line3, not(equalTo(line)));
+        assertThat(line3, not(equalTo(null)));
+
+        assertThat(line2.hashCode(), equalTo(line.hashCode()));
+        assertThat(line2.hashCode(), not(equalTo(line3.hashCode())));
     }
 
     // Ensure we won't see silly localised formats like "10,000" instead of "10000".

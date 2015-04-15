@@ -4,42 +4,22 @@ import org.slf4j.Logger;
 
 class LogLevelHelper {
 
-    public static enum Level {
-
-        TRACE("trace"), DEBUG("debug"), INFO("info"), WARN("warn"), ERROR("error");
-        private final String levelName;
-
-        Level(String levelName) {
-            this.levelName = levelName;
-        }
-
-        public String getLevelName() {
-            return levelName;
-        }
-    }
-
     private LogLevelHelper() {
     }
 
-    public static void log(Logger logger, Level level, String msg, Object... arguments) {
-        if (logger != null && level != null) {
-            switch (level) {
-                case TRACE:
-                    logger.trace(msg, arguments);
-                    break;
-                case DEBUG:
-                    logger.debug(msg, arguments);
-                    break;
-                case INFO:
-                    logger.info(msg, arguments);
-                    break;
-                case WARN:
-                    logger.warn(msg, arguments);
-                    break;
-                case ERROR:
-                    logger.error(msg, arguments);
-                    break;
-            }
+    static void log(Logger logger, Level level, String msg, Object... arguments) {
+        if (Level.TRACE == level) {
+            logger.trace(msg, arguments);
+        } else if (Level.DEBUG == level) {
+            logger.debug(msg, arguments);
+        } else if (Level.INFO == level) {
+            logger.info(msg, arguments);
+        } else if (Level.WARN == level) {
+            logger.warn(msg, arguments);
+        } else if (Level.ERROR == level) {
+            logger.error(msg, arguments);
+        } else {
+            throw new IllegalArgumentException("unsupported level " + level);
         }
     }
 }
