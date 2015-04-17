@@ -7,6 +7,7 @@ import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
+import org.slf4j.Marker;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +69,28 @@ public class LogWithPatternAndLevel {
      */
     public void log(Object... args) {
         if (!isRateLimited()) {
-            LogLevelHelper.log(logger, level, message, args);
+            level.log(logger, message, args);
+        }
+        incrementStats();
+    }
+
+    public void log(Throwable t) {
+        if (!isRateLimited()) {
+            level.log(logger, message, t);
+        }
+        incrementStats();
+    }
+
+    public void log(Marker marker, Object... args) {
+        if (!isRateLimited()) {
+            level.log(logger, message, marker, args);
+        }
+        incrementStats();
+    }
+
+    public void log(Marker marker, Throwable t) {
+        if (!isRateLimited()) {
+            level.log(logger, message, marker, t);
         }
         incrementStats();
     }
@@ -115,7 +137,7 @@ public class LogWithPatternAndLevel {
             return;  // special case: we hit the rate limit, but did not actually exceed it -- nothing got suppressed, so there's no need to log
         }
         Duration howLong = new Duration(whenLimited, elapsedMsecs());
-        LogLevelHelper.log(logger, level, "(suppressed {} logs similar to '{}' in {})", numSuppressed, message, howLong);
+        level.log(logger, "(suppressed {} logs similar to '{}' in {})", numSuppressed, message, howLong);
     }
 
     private synchronized void haveJustExceededRateLimit() {
@@ -160,10 +182,7 @@ public class LogWithPatternAndLevel {
             return false;
         }
         LogWithPatternAndLevel other = (LogWithPatternAndLevel) o;
-        if (other.level != level) {
-            return false;
-        }
-        return (message.equals(other.message));
+        return other.level == level && (message.equals(other.message));
     }
 
     @Override

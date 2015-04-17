@@ -6,6 +6,7 @@ import com.google.common.base.Stopwatch;
 import net.jcip.annotations.ThreadSafe;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
+import org.slf4j.Marker;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicReferenceArray;
@@ -52,20 +53,80 @@ public class RateLimitedLogWithPattern {
         get(Level.TRACE).log(args);
     }
 
+    public void trace(Throwable t) {
+        get(Level.TRACE).log(t);
+    }
+
+    public void trace(Marker marker, Object... args) {
+        get(Level.TRACE).log(marker, args);
+    }
+
+    public void trace(Marker marker, Throwable t) {
+        get(Level.TRACE).log(marker, t);
+    }
+
     public void debug(Object... args) {
         get(Level.DEBUG).log(args);
+    }
+
+    public void debug(Throwable t) {
+        get(Level.DEBUG).log(t);
+    }
+
+    public void debug(Marker marker, Object... args) {
+        get(Level.DEBUG).log(marker, args);
+    }
+
+    public void debug(Marker marker, Throwable t) {
+        get(Level.DEBUG).log(marker, t);
     }
 
     public void info(Object... args) {
         get(Level.INFO).log(args);
     }
 
+    public void info(Throwable t) {
+        get(Level.INFO).log(t);
+    }
+
+    public void info(Marker marker, Object... args) {
+        get(Level.INFO).log(marker, args);
+    }
+
+    public void info(Marker marker, Throwable t) {
+        get(Level.INFO).log(marker, t);
+    }
+
     public void warn(Object... args) {
         get(Level.WARN).log(args);
     }
 
+    public void warn(Throwable t) {
+        get(Level.WARN).log(t);
+    }
+
+    public void warn(Marker marker, Object... args) {
+        get(Level.WARN).log(marker, args);
+    }
+
+    public void warn(Marker marker, Throwable t) {
+        get(Level.WARN).log(marker, t);
+    }
+
     public void error(Object... args) {
         get(Level.ERROR).log(args);
+    }
+
+    public void error(Throwable t) {
+        get(Level.ERROR).log(t);
+    }
+
+    public void error(Marker marker, Object... args) {
+        get(Level.ERROR).log(marker, args);
+    }
+
+    public void error(Marker marker, Throwable t) {
+        get(Level.ERROR).log(marker, t);
     }
 
     /**
