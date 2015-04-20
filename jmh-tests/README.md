@@ -8,11 +8,11 @@ This is a set of JMH microbenchmarks for RateLimitedLogger.
 run:
 
 ```
+    ( cd .. ; ./gradlew clean jar )
     mvn install:install-file -DgroupId=com.swrve -Dpackaging=jar \
         -DartifactId=rate-limited-logger -DgeneratePom=true \
-        -Dversion=1.1 -Dfile=../build/libs/rate-limited-logger-1.1.jar
-
-    mvn clean install && java -jar target/benchmarks.jar
+        -Dversion=99.9 -Dfile=../build/libs/rate-limited-logger-1.1.jar \
+    && mvn clean install && java -jar target/benchmarks.jar
 ```
 
 
