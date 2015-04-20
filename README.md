@@ -105,15 +105,20 @@ lose data!
 ## Performance
 
 In tests using JMH with Java 7 on a 2012 Macbook Pro, using RateLimitedLog with
-a string key (ie. the typical usage) ran in, on average, 105 nanoseconds per op,
-with a P99.99 of 16992 ns/op.
+logger.info("string") ran in, on average, 73 nanoseconds per op, with a P99.99
+of 2000 ns/op and a P99.999 of 12000 ns/op, once the rate limit was exceeded.
 
 Where performance is critical, note that you can obtain a reference to the
 LogWithPatternAndLevel object for an individual log template and level, which will
-then avoid a ConcurrentHashMap and AtomicReferenceArray lookup.
+then avoid a ConcurrentHashMap and AtomicReferenceArray lookup:
 
-Using this approach, the average time dropped to 76 nanoseconds per op, with a
-P99.99 of 4519 ns/op. TODO update
+```
+  ref = logger.get("string", Level.INFO)
+  ref.log()
+```
+
+Using this approach, the average post-ratelimit time dropped to 56 nanoseconds
+per op, with a P99.99 of 1000 ns/op and a P99.999 of 8992 ns/op.
 
 More details: https://github.com/Swrve/rate-limited-logger/tree/master/jmh-tests
 

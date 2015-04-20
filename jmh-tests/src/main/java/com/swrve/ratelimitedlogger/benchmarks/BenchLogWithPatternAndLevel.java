@@ -1,7 +1,7 @@
 package com.swrve.ratelimitedlogger.benchmarks;
 
-import com.swrve.ratelimitedlogger.RateLimitedLog;
-import com.swrve.ratelimitedlogger.RateLimitedLogWithPattern;
+import com.swrve.ratelimitedlogger.*;
+import com.swrve.ratelimitedlogger.Level;
 import org.joda.time.Duration;
 import org.openjdk.jmh.annotations.*;
 import java.util.concurrent.TimeUnit;
@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS )
 @Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS )
 @State(Scope.Benchmark)
-public class BenchRateLimitedLogWithPattern {
-    private static final Logger logger = LoggerFactory.getLogger(BenchRateLimitedLogWithPattern.class);
+public class BenchLogWithPatternAndLevel {
+    private static final Logger logger = LoggerFactory.getLogger(BenchLogWithPatternAndLevel.class);
     private static final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
                    .maxRate(1).every(Duration.standardSeconds(1000))
                    .build();
 
-    private RateLimitedLogWithPattern testMessage;
+    private LogWithPatternAndLevel testMessage;
 
     @Setup
     public void prepare() {
@@ -25,13 +25,13 @@ public class BenchRateLimitedLogWithPattern {
         for (int i = 0; i < 100; i++) {
             rateLimitedLog.info("unused_" + i);
         }
-        testMessage = rateLimitedLog.get("test");
+        testMessage = rateLimitedLog.get("test", Level.INFO);
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public void testMethod() {
-        testMessage.info();
+        testMessage.log();
     }
 }
