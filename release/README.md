@@ -8,6 +8,6 @@ TODO: write up how to push to the maven public repo using Sonatype
 
 Run:
 
-    git checkout -b release-N.N.N
+    git tag -a release-N.N.N -m 'new release'
     git push origin release-N.N.N
 
