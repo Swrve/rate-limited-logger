@@ -1,0 +1,13 @@
+
+== 1.0.1 (not yet released) ==
+
+* Support level-based suppression; thanks to Oleg Iakovlev.
+
+* Change source compatibility in build.gradle to Java 1.6; thanks to Oleg Iakovlev.
+
+* CircleCI configs to build pull requests and collect JUnit results; thanks to Marc O'Morain.
+
+
+== 1.0 ==
+
+* Initial public release.
