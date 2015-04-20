@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 /**
-* Our support logging levels, matching SLF4J.
+* Our supported logging levels. These match SLF4J.
 */
 public enum Level {
     TRACE("trace") {

@@ -20,8 +20,10 @@ rm -rf build/gh-pages
 git clone --quiet --branch=gh-pages git@github.com:Swrve/rate-limited-logger.git build/gh-pages
 cd build/gh-pages
 
-git rm -rf javadoc
-mkdir javadoc
+# ensure we don't keep any cruft around from previous builds of this version's javadoc
+[ -d javadoc/$version ] && git rm -rf javadoc/$version
+
+mkdir -p javadoc
 cp -R ../docs/javadoc javadoc/$version
 
 git add -f javadoc
