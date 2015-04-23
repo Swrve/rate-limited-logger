@@ -19,7 +19,7 @@ Run:
   ./gradlew uploadArchives
 
 Go to https://oss.sonatype.org/#stagingRepositories and log in using
-the credentials in release-signing/gradle.properties .
+the credentials in release/signing/gradle.properties .
 
 Scroll to the bottom of the list looking for a task starting with
 "comswrve".  Tick it then hit the "Close" button and enter a brief
