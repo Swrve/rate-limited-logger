@@ -34,14 +34,14 @@ Maven:
   <dependency>
       <groupId>com.swrve</groupId>
       <artifactId>rate-limited-logger</artifactId>
-      <version>1.0</version>
+      <version>1.1.0</version>
   </dependency>
 ```
 
 Gradle:
 
 ```
-  compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.0'
+  compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.1.0'
 ```
 
 Sample code:
@@ -61,7 +61,7 @@ to be output every 10 seconds, suppressing any more than that.
 
 ## More documentation
 
-Javadoc can be found at http://swrve.github.io/rate-limited-logger/javadoc/1.0/
+Javadoc can be found at http://swrve.github.io/rate-limited-logger/javadoc/1.1.0/
 
 
 ## Sample output
