@@ -1,6 +1,12 @@
 
 ## How to push a new release
 
+## Step 0: check the version numbers!
+
+Check README.md and build.gradle; the correct version number should
+crop up in several locations.
+
+
 ## Step 1: regenerate javadocs
 
 Run "release/publish-javadoc" to regenerate the javadoc website.
