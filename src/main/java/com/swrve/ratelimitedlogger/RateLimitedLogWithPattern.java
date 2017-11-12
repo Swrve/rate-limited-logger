@@ -1,14 +1,12 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import net.jcip.annotations.ThreadSafe;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
@@ -23,18 +21,18 @@ public class RateLimitedLogWithPattern {
     private final RateAndPeriod rateAndPeriod;
     private final Logger logger;
     private final Registry registry;
-    private final Optional<CounterMetric> stats;
+    private final CounterMetric stats;
     private final Stopwatch stopwatch;
     private final AtomicReferenceArray<LogWithPatternAndLevel> levels;
 
-    RateLimitedLogWithPattern(String message, RateAndPeriod rateAndPeriod, Registry registry, Optional<CounterMetric> stats, Stopwatch stopwatch, Logger logger) {
+    RateLimitedLogWithPattern(String message, RateAndPeriod rateAndPeriod, Registry registry, CounterMetric stats, Stopwatch stopwatch, Logger logger) {
         this.message = message;
         this.rateAndPeriod = rateAndPeriod;
         this.registry = registry;
         this.logger = logger;
         this.stats = stats;
         this.stopwatch = stopwatch;
-        this.levels = new AtomicReferenceArray<LogWithPatternAndLevel>(Level.values().length);
+        this.levels = new AtomicReferenceArray<>(Level.values().length);
     }
 
     /**
@@ -175,7 +173,7 @@ public class RateLimitedLogWithPattern {
 
         boolean wasSet = levels.compareAndSet(l, null, newValue);
         if (!wasSet) {
-            return Preconditions.checkNotNull(levels.get(l));
+            return Objects.requireNonNull(levels.get(l));
         } else {
             // ensure we'll reset the counter once every period
             registry.register(newValue, rateAndPeriod.periodLength);

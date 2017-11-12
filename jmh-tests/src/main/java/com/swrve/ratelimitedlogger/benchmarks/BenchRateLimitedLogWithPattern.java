@@ -2,8 +2,9 @@ package com.swrve.ratelimitedlogger.benchmarks;
 
 import com.swrve.ratelimitedlogger.RateLimitedLog;
 import com.swrve.ratelimitedlogger.RateLimitedLogWithPattern;
-import org.joda.time.Duration;
 import org.openjdk.jmh.annotations.*;
+
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class BenchRateLimitedLogWithPattern {
     private static final Logger logger = LoggerFactory.getLogger(BenchRateLimitedLogWithPattern.class);
     private static final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                   .maxRate(1).every(Duration.standardSeconds(1000))
+                   .maxRate(1).every(Duration.ofSeconds(1000))
                    .build();
 
     private RateLimitedLogWithPattern testMessage;

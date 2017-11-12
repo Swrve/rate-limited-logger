@@ -1,11 +1,10 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import net.jcip.annotations.NotThreadSafe;
 import org.slf4j.Logger;
-import org.joda.time.Duration;
+
+import javax.annotation.concurrent.NotThreadSafe;
+import java.time.Duration;
+import java.util.Objects;
 
 /**
  * Factory to create new RateLimitedLog instances in a fluent Builder style.  Start with
@@ -16,8 +15,8 @@ public class RateLimitedLogBuilder {
     private final Logger logger;
     private final int maxRate;
     private final Duration periodLength;
-    private Stopwatch stopwatch = Stopwatch.createUnstarted();
-    private Optional<CounterMetric> stats = Optional.absent();
+    private Stopwatch stopwatch = new Stopwatch();
+    private CounterMetric stats;
 
     public static class MissingRateAndPeriod {
         private final Logger logger;
@@ -39,7 +38,7 @@ public class RateLimitedLogBuilder {
         private final int maxRate;
 
         private MissingPeriod(Logger logger, int rate) {
-            Preconditions.checkNotNull(logger);
+            Objects.requireNonNull(logger);
             this.logger = logger;
             this.maxRate = rate;
         }
@@ -48,7 +47,7 @@ public class RateLimitedLogBuilder {
          * Specify the time period.  Required.
          */
         public RateLimitedLogBuilder every(Duration duration) {
-            Preconditions.checkNotNull(duration);
+            Objects.requireNonNull(duration);
             return new RateLimitedLogBuilder(logger, maxRate, duration);
         }
     }
@@ -63,7 +62,7 @@ public class RateLimitedLogBuilder {
      * Specify that the rate-limited logger should compute time using @param stopwatch.
      */
     public RateLimitedLogBuilder withStopwatch(Stopwatch stopwatch) {
-        this.stopwatch = Preconditions.checkNotNull(stopwatch);
+        this.stopwatch = Objects.requireNonNull(stopwatch);
         return this;
     }
 
@@ -71,7 +70,7 @@ public class RateLimitedLogBuilder {
      * Optional: should we record metrics about the call rate using @param stats.  Default is not to record metrics
      */
     public RateLimitedLogBuilder recordMetrics(CounterMetric stats) {
-        this.stats = Optional.of(Preconditions.checkNotNull(stats));
+        this.stats = Objects.requireNonNull(stats);
         return this;
     }
 
@@ -79,8 +78,12 @@ public class RateLimitedLogBuilder {
      * @return a fully-built RateLimitedLog matching the requested configuration.
      */
     public RateLimitedLog build() {
-        Preconditions.checkArgument(maxRate > 0, "maxRate must be > 0");
-        Preconditions.checkArgument(periodLength.getMillis() > 0L, "period must be non-zero");
+        if (maxRate <= 0) {
+            throw new IllegalArgumentException("maxRate must be > 0");
+        }
+        if (periodLength.toMillis() <= 0) {
+            throw new IllegalArgumentException("period must be non-zero");
+        }
         stopwatch.start();
         return new RateLimitedLog(logger,
                 new RateLimitedLogWithPattern.RateAndPeriod(maxRate, periodLength), stopwatch,

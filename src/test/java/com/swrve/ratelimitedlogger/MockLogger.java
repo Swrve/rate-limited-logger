@@ -1,10 +1,11 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
+
+import java.util.Optional;
 
 /**
  * An implementation of Logger suitable for the rate-limited log unit tests
@@ -16,7 +17,7 @@ class MockLogger implements Logger {
     public int warnMessageCount;
     public int errorMessageCount;
     int traceMessageCount;
-    Optional<String> infoLastMessage;
+    String infoLastMessage;
 
     @Override
     public boolean isDebugEnabled() {
@@ -148,7 +149,7 @@ class MockLogger implements Logger {
     @Override
     public void info(String msg) {
         logger.info("[info] "+msg);
-        infoLastMessage = Optional.of(msg);
+        infoLastMessage = msg;
         infoMessageCount++;
     }
 
@@ -327,5 +328,9 @@ class MockLogger implements Logger {
     @Override
     public void warn(Marker marker, String msg, Throwable t) {
         throw new IllegalStateException("not supported");
+    }
+
+    public Optional<String> getInfoLastMessage() {
+        return Optional.of(infoLastMessage);
     }
 }

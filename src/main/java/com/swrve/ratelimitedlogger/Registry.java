@@ -1,13 +1,14 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.jcip.annotations.ThreadSafe;
-import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.ThreadSafe;
+import java.time.Duration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Internal registry of LogWithPatternAndLevel objects, allowing periodic resets of their counters.
@@ -17,12 +18,19 @@ class Registry {
     private static final Logger logger = LoggerFactory.getLogger(Registry.class);
 
     private final ConcurrentHashMap<Duration, ConcurrentHashMap<LogWithPatternAndLevel, Boolean>> registry
-            = new ConcurrentHashMap<Duration, ConcurrentHashMap<LogWithPatternAndLevel, Boolean>>();
+            = new ConcurrentHashMap<>();
 
-    private final ThreadFactory threadFactory = new ThreadFactoryBuilder()
-            .setNameFormat("RateLimitedLogRegistry-%d")
-            .setDaemon(true)
-            .build();
+    private final ThreadFactory threadFactory = new ThreadFactory() {
+        final AtomicLong count = new AtomicLong(0);
+
+        @Override
+        public Thread newThread(Runnable r) {
+            Thread thread = new Thread(r);
+            thread.setName(String.format(Locale.ROOT, "RateLimitedLogRegistry-%d", count.getAndIncrement()));
+            thread.setDaemon(true);
+            return thread;
+        }
+    };
 
     private final ScheduledExecutorService resetScheduler = Executors.newScheduledThreadPool(1, threadFactory);
 
@@ -42,7 +50,7 @@ class Registry {
         ConcurrentHashMap<LogWithPatternAndLevel, Boolean> logLinesForPeriod = registry.get(period);
         if (logLinesForPeriod == null) {
             needToScheduleReset = true;
-            logLinesForPeriod = new ConcurrentHashMap<LogWithPatternAndLevel, Boolean>();
+            logLinesForPeriod = new ConcurrentHashMap<>();
             registry.put(period, logLinesForPeriod);
 
         } else {
@@ -54,17 +62,14 @@ class Registry {
 
         if (needToScheduleReset) {
             final ConcurrentHashMap<LogWithPatternAndLevel, Boolean> finalLogLinesForPeriod = logLinesForPeriod;
-            resetScheduler.scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        resetAllCounters(finalLogLinesForPeriod);
-                    } catch (Exception e) {
-                        logger.warn("failed to reset counters: " + e, e);
-                        // but carry on in the next iteration
-                    }
+            resetScheduler.scheduleWithFixedDelay(() -> {
+                try {
+                    resetAllCounters(finalLogLinesForPeriod);
+                } catch (Exception e) {
+                    logger.warn("failed to reset counters: " + e, e);
+                    // but carry on in the next iteration
                 }
-            }, period.getMillis(), period.getMillis(), TimeUnit.MILLISECONDS);
+            }, period.toMillis(), period.toMillis(), TimeUnit.MILLISECONDS);
         }
     }
 

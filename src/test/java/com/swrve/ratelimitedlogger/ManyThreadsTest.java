@@ -1,8 +1,8 @@
 package com.swrve.ratelimitedlogger;
 
-import org.joda.time.Duration;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,7 @@ public class ManyThreadsTest {
         MockLogger logger = new MockLogger();
 
         final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
-                .maxRate(1).every(Duration.millis(100))
+                .maxRate(1).every(Duration.ofMillis(100))
                 .build();
 
         final AtomicBoolean done = new AtomicBoolean(false);
@@ -27,13 +27,10 @@ public class ManyThreadsTest {
 
         ExecutorService exec = Executors.newFixedThreadPool(10);
         for (int thread = 0; thread < 10; thread++) {
-            exec.submit(new Runnable() {
-                @Override
-                public void run() {
-                    while (!done.get()) {
-                        for (int i = 0; i < 1000; i++) {
-                            rateLimitedLog.info("manyThreads {}", Thread.currentThread().getId());
-                        }
+            exec.submit(() -> {
+                while (!done.get()) {
+                    for (int i = 0; i < 1000; i++) {
+                        rateLimitedLog.info("manyThreads {}", Thread.currentThread().getId());
                     }
                 }
             });
@@ -59,7 +56,7 @@ public class ManyThreadsTest {
 
         // ensure that "similar messages suppressed" took place
         assertThat(logger.infoMessageCount, not(equalTo(c + 10)));
-        assertThat(logger.infoLastMessage.get(), startsWith("(suppressed "));
+        assertThat(logger.getInfoLastMessage().get(), startsWith("(suppressed "));
 
     }
 }
