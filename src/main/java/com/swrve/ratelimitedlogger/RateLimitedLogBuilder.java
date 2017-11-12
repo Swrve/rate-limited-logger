@@ -2,6 +2,7 @@ package com.swrve.ratelimitedlogger;
 
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.time.Duration;
 import java.util.Objects;
@@ -16,7 +17,7 @@ public class RateLimitedLogBuilder {
     private final int maxRate;
     private final Duration periodLength;
     private Stopwatch stopwatch = new Stopwatch();
-    private CounterMetric stats;
+    private @Nullable CounterMetric stats = null;
 
     public static class MissingRateAndPeriod {
         private final Logger logger;

@@ -40,7 +40,7 @@ dependencies {
 // http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
 apply plugin: 'findbugs'
 findbugs {
-    toolVersion = "2.0.3"
+    toolVersion = "3.0.1"
     effort = "max"
     reportLevel = "high"
     ignoreFailures = false

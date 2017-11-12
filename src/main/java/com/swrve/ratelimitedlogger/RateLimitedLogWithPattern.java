@@ -21,11 +21,11 @@ public class RateLimitedLogWithPattern {
     private final RateAndPeriod rateAndPeriod;
     private final Logger logger;
     private final Registry registry;
-    private final CounterMetric stats;
+    private final @Nullable CounterMetric stats;
     private final Stopwatch stopwatch;
     private final AtomicReferenceArray<LogWithPatternAndLevel> levels;
 
-    RateLimitedLogWithPattern(String message, RateAndPeriod rateAndPeriod, Registry registry, CounterMetric stats, Stopwatch stopwatch, Logger logger) {
+    RateLimitedLogWithPattern(String message, RateAndPeriod rateAndPeriod, Registry registry, @Nullable CounterMetric stats, Stopwatch stopwatch, Logger logger) {
         this.message = message;
         this.rateAndPeriod = rateAndPeriod;
         this.registry = registry;
