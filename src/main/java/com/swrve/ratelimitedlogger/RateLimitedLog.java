@@ -1,13 +1,10 @@
 package com.swrve.ratelimitedlogger;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
-import net.jcip.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
+import javax.annotation.concurrent.ThreadSafe;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -57,27 +54,26 @@ public class RateLimitedLog implements Logger {
      * probable that an already-interpolated string is accidentally being used as a
      * pattern.
      */
-    @VisibleForTesting
     static final int MAX_PATTERNS_PER_LOG = 1000;
 
     private final ConcurrentHashMap<String, RateLimitedLogWithPattern> knownPatterns
-            = new ConcurrentHashMap<String, RateLimitedLogWithPattern>();
+            = new ConcurrentHashMap<>();
 
     private final Logger logger;
     private final RateLimitedLogWithPattern.RateAndPeriod rateAndPeriod;
     private final Registry registry;
     private final Stopwatch stopwatch;
-    private final Optional<CounterMetric> stats;
+    private final CounterMetric stats;
 
     /**
      * Start building a new RateLimitedLog, wrapping the SLF4J logger @param logger.
      */
     public static RateLimitedLogBuilder.MissingRateAndPeriod withRateLimit(Logger logger) {
-        return new RateLimitedLogBuilder.MissingRateAndPeriod(Preconditions.checkNotNull(logger));
+        return new RateLimitedLogBuilder.MissingRateAndPeriod(Objects.requireNonNull(logger));
     }
 
     // package-local ctor called by the Builder
-    RateLimitedLog(Logger logger, RateLimitedLogWithPattern.RateAndPeriod rateAndPeriod, Stopwatch stopwatch, Optional<CounterMetric> stats, Registry registry) {
+    RateLimitedLog(Logger logger, RateLimitedLogWithPattern.RateAndPeriod rateAndPeriod, Stopwatch stopwatch, CounterMetric stats, Registry registry) {
         this.logger = logger;
         this.rateAndPeriod = rateAndPeriod;
         this.registry = registry;

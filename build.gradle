@@ -7,7 +7,7 @@ archivesBaseName = 'rate-limited-logger'
 version = '1.1.0'
 
 ext.packaging = 'jar'
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -24,8 +24,6 @@ buildscript {
 
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
-    compile group: 'joda-time', name: 'joda-time', version: '2.3'
-    compile group: 'com.google.guava', name: 'guava', version: '15.0'
     compile group: 'findbugs', name: 'annotations', version: '1.0.0'
     compile group: 'com.google.code.findbugs', name: 'jsr305', version: '2.0.2'
 
@@ -42,7 +40,7 @@ dependencies {
 // http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
 apply plugin: 'findbugs'
 findbugs {
-    toolVersion = "2.0.3"
+    toolVersion = "3.0.1"
     effort = "max"
     reportLevel = "high"
     ignoreFailures = false
@@ -83,6 +81,7 @@ artifacts {
 }
 
 signing {
+    required { gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
 }
 
