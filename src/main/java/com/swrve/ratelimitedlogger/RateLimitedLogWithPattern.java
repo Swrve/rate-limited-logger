@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * An individual log pattern.  Each object is rate-limited individually but with separation on the log level.
- * <p/>
+ *
  * These objects are thread-safe.
  */
 @ThreadSafe
@@ -37,10 +37,10 @@ public class RateLimitedLogWithPattern {
 
     /**
      * logging APIs.
-     * <p/>
+     *
      * These can use the SLF4J style of templating to parameterize the Logs.
      * See http://www.slf4j.org/api/org/slf4j/helpers/MessageFormatter.html .
-     * <p/>
+     *
      * <pre>
      *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
      * </pre>
@@ -151,10 +151,10 @@ public class RateLimitedLogWithPattern {
      * @return a LogWithPatternAndLevel object for the supplied @param level .
      * This can be cached and reused by callers in performance-sensitive
      * cases to avoid performing two ConcurrentHashMap lookups.
-     * <p/>
+     *
      * Note that the string is the sole key used, so the same string cannot be reused with differing period
      * settings; any periods which differ from the first one used are ignored.
-     * <p/>
+     *
      * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
      * in any one period; if this happens, it's probable that an already-interpolated string is
      * accidentally being used as a log pattern.

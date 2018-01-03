@@ -9,37 +9,37 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * An SLF4J-compatible API for rate-limited logging.  Example usage:
- * <p/>
+ * 
  * <pre>
  *    private static final Logger logger = LoggerFactory.getLogger(getClass());
  *    private static final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
  *             .maxRate(5).every(Duration.ofSeconds(10))
  *             .build();
  * </pre>
- * <p/>
+ *
  * This will wrap an existing SLF4J Logger object, allowing a max of 5 messages to be output every 10 seconds,
  * suppressing any more than that.  When a log is suppressed, at the end of the 10-second period, another
  * log message is output indicating how many logs were hidden.  This style of rate limiting is the same as the
  * one used by UNIX syslog, so should be comprehensible, easy to predict, and familiar to many users, unlike
  * more complex adaptive rate limits.
- * <p/>
+ *
  * Each log message has its own internal rate limiting counter.  In other words, if you have 2 log messages, you can
  * safely reuse the same RateLimitedLog object to log both, and the rate of one will not caused the other to
  * be suppressed as a side effect. However, this means that if you wish to include dynamic, variable data in the log
  * output, you will need to use SLF4J-style templates, instead of ("foo " + bar + " baz") string interpolation.
  * For example:
- * <p/>
+ *
  * <pre>
  *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
  * </pre>
- * <p/>
+ *
  * "{}" will implicitly invoke an object's toString() method, so toString() does not need
  * to be called explicitly when logging.  (This has obvious performance benefits, in that
  * those toString() methods will not be called at all once the rate limits have been exceeded.)
- * <p/>
+ *
  * Where performance is critical, note that you can obtain a reference to the RateLimitedLogWithPattern object
  * for an individual log template, which will avoid a ConcurrentHashMap lookup.
- * <p/>
+ *
  * The RateLimitedLog objects are thread-safe.
  */
 @ThreadSafe
@@ -388,10 +388,10 @@ public class RateLimitedLog implements Logger {
     /**
      * @return a RateLimitedLogWithPattern object for the supplied @param message.  This can be cached and
      * reused by callers in performance-sensitive cases to avoid performing a ConcurrentHashMap lookup.
-     * <p/>
+     *
      * Note that the string is the sole key used, so the same string cannot be reused with differing period
      * settings; any periods which differ from the first one used are ignored.
-     * <p/>
+     *
      * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
      * in any one period; if this happens, it's probable that an already-interpolated string is
      * accidentally being used as a log pattern.
@@ -422,10 +422,10 @@ public class RateLimitedLog implements Logger {
      * @return a LogWithPatternAndLevel object for the supplied @param message and
      * @param level .  This can be cached and reused by callers in performance-sensitive
      * cases to avoid performing two ConcurrentHashMap lookups.
-     * <p/>
+     *
      * Note that the string is the sole key used, so the same string cannot be reused with differing period
      * settings; any periods which differ from the first one used are ignored.
-     * <p/>
+     *
      * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
      * in any one period; if this happens, it's probable that an already-interpolated string is
      * accidentally being used as a log pattern.

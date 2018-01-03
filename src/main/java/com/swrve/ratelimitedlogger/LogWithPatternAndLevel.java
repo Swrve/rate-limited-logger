@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * An individual log pattern and level - the unit of rate limiting.  Each object is rate-limited
  * individually.
- * <p/>
+ * 
  * Thread-safe.
  */
 @ThreadSafe
@@ -54,10 +54,10 @@ public class LogWithPatternAndLevel {
 
     /**
      * logging APIs.
-     * <p/>
+     *
      * These can use the SLF4J style of templating to parameterize the Logs.
      * See http://www.slf4j.org/api/org/slf4j/helpers/MessageFormatter.html .
-     * <p/>
+     *
      * <pre>
      *    rateLimitedLog.info("Just saw an event of type {}: {}", event.getType(), event);
      * </pre>
@@ -153,7 +153,7 @@ public class LogWithPatternAndLevel {
      * Increment a counter metric called "{level}_rate_limited_log_count", where "{level}" is the log
      * level in question.  This is still performed even when a log is rate limited, since incrementing
      * a counter metric is cheap!
-     * <p/>
+     *
      * This deliberately doesn't attempt to use counter metrics named after the log message, since
      * extracting that without making a mess is complex, and if that's desired, it's easy enough
      * for calling code to do it instead.  As an "early warning" indicator that lots of logging
