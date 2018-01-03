@@ -137,8 +137,6 @@ All versions are minimum versions -- later versions should also work fine.
 
 - Java 1.6
 - SLF4J API 1.7.7
-- Guava 15.0
-- Joda-Time 2.3
 - Findbugs Annotations 1.0.0
 - Findbugs JSR-305 Annotations 2.0.2
 
