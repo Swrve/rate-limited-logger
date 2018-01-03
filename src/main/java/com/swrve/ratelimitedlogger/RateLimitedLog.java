@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <pre>
  *    private static final Logger logger = LoggerFactory.getLogger(getClass());
  *    private static final RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
- *             .maxRate(5).every(Duration.standardSeconds(10))
+ *             .maxRate(5).every(Duration.ofSeconds(10))
  *             .build();
  * </pre>
  * <p/>

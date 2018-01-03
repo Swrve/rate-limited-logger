@@ -34,14 +34,14 @@ Maven:
   <dependency>
       <groupId>com.swrve</groupId>
       <artifactId>rate-limited-logger</artifactId>
-      <version>1.1.0</version>
+      <version>2.0.0</version>
   </dependency>
 ```
 
 Gradle:
 
 ```
-  compile group: 'com.swrve', name: 'rate-limited-logger', version: '1.1.0'
+  compile group: 'com.swrve', name: 'rate-limited-logger', version: '2.0.0'
 ```
 
 Sample code:
@@ -51,7 +51,7 @@ Sample code:
 
   private static final RateLimitedLog rateLimitedLog = RateLimitedLog
             .withRateLimit(logger)
-            .maxRate(5).every(Duration.standardSeconds(10))
+            .maxRate(5).every(Duration.ofSeconds(10))
             .build();
 ```
 
@@ -61,7 +61,7 @@ to be output every 10 seconds, suppressing any more than that.
 
 ## More documentation
 
-Javadoc can be found at http://swrve.github.io/rate-limited-logger/javadoc/1.1.0/
+Javadoc can be found at http://swrve.github.io/rate-limited-logger/javadoc/2.0.0/
 
 
 ## Sample output
@@ -135,15 +135,18 @@ of a few milliseconds).
 
 All versions are minimum versions -- later versions should also work fine.
 
-- Java 1.6
+- Java 8
 - SLF4J API 1.7.7
 - Findbugs Annotations 1.0.0
 - Findbugs JSR-305 Annotations 2.0.2
 
+version 1.1.0 of RateLimitedLogger supports Java 7, but requires Guava 15.0 and
+Joda-Time 2.3 in addition to the above.
+
 
 ## License
 
-(c) Copyright 2014-2015 Swrve Mobile Inc or its licensors.
+(c) Copyright 2014-2018 Swrve Mobile Inc or its licensors.
 Distributed under version 2.0 of the Apache License, see "LICENSE".
 
 
