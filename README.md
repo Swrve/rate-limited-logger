@@ -28,6 +28,11 @@ into existing Java code.
 This module is available in the Maven Central repository at
 http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22rate-limited-logger%22
 
+WARNING: version 2.0.0 drops support for Java 6 and 7, and is Java 8-only. It
+also requires (minor) code changes to use the java.time classes instead of
+Joda-Time.  If you still need support for Java 6 or 7, use version 1.1.0 or
+earlier.
+
 Maven:
 
 ```
@@ -162,5 +167,7 @@ Build all JARs, test, measure coverage:
 ## Credits
 
 - The Swrve team: http://www.swrve.com/
-- Our dev blog: http://swrveengineering.wordpress.com/
+    - Our dev blog: http://swrveengineering.wordpress.com/
+
+- Fabien Comte <comtef at gmail.com>, for Java 8 support
 
