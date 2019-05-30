@@ -1,3 +1,16 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'net.ltgt.gradle:gradle-errorprone-plugin:latest.release'
+  }
+}
+
+plugins {
+    id 'com.github.spotbugs' version '2.0.0'
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
@@ -11,15 +24,6 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-}
-
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'net.ltgt.gradle:gradle-errorprone-plugin:latest.release'
-  }
 }
 
 dependencies {
@@ -37,32 +41,29 @@ dependencies {
 // https://github.com/tbroyer/gradle-errorprone-plugin
 /// apply plugin: 'errorprone'
 
-// http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
-apply plugin: 'findbugs'
-findbugs {
-    toolVersion = "3.0.1"
+spotbugs {
+    toolVersion = "3.1.12"
     effort = "max"
     reportLevel = "high"
     ignoreFailures = false
     ext.maxHeapSize = "200m"
 }
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true // gimme something I can read!
-    }
+
+spotbugsMain {
+    reports.xml.enabled = false
+    reports.html.enabled = true
 }
 
 // checking test classes for FindBugs isn't all that useful
-findbugsTest.enabled = false
+spotbugsTest.enabled = false
 
 // ---------------------------------------------------------------------------
 
 apply plugin: 'jacoco'
 
 task all(dependsOn: [
-        test, findbugsMain, jacocoTestReport
-    ]) doLast { }
+        test, spotbugsMain, jacocoTestReport
+    ])
 
 // ---------------------------------------------------------------------------
 
