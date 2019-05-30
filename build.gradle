@@ -63,7 +63,7 @@ apply plugin: 'jacoco'
 
 task all(dependsOn: [
         test, spotbugsMain, jacocoTestReport
-    ]) doLast { }
+    ])
 
 // ---------------------------------------------------------------------------
 
