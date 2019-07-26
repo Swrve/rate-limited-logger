@@ -34,6 +34,11 @@ class Registry {
 
     private final ScheduledExecutorService resetScheduler = Executors.newScheduledThreadPool(1, threadFactory);
 
+    Registry() {
+        // this will ensure that we will always flush any suppressed logs prior to exiting a process
+        Runtime.getRuntime().addShutdownHook(new Thread(this::flush));
+    }
+
     /**
      * Register a new @param log, with a reset periodicity of @param period.  This happens relatively infrequently,
      * so synchronization is ok (and safer)
