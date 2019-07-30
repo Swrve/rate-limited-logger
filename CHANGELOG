@@ -1,4 +1,16 @@
 
+== 2.0.1 ==
+
+* add a shutdownHook to ensure accumulated suppressions are flushed prior to process exit.
+
+* update Gradle version; thanks to Pine Muzine.
+
+
+== 2.0.0 ==
+
+* Java 8 support, no Guava/Joda-Time dependencies; thanks to Fabien Comte <comtef at gmail.com>.
+
+
 == 1.1.0 ==
 
 * Support level-based suppression; thanks to Oleg Iakovlev.
