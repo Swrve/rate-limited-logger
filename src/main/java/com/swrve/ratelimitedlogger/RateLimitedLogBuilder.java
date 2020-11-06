@@ -2,8 +2,8 @@ package com.swrve.ratelimitedlogger;
 
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.NotThreadSafe;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import net.jcip.annotations.NotThreadSafe;
 import java.time.Duration;
 import java.util.Objects;
 
