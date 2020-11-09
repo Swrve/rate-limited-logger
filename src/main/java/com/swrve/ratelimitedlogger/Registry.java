@@ -3,7 +3,7 @@ package com.swrve.ratelimitedlogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.concurrent.ThreadSafe;
+import net.jcip.annotations.ThreadSafe;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;

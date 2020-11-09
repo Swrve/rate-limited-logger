@@ -3,8 +3,8 @@ package com.swrve.ratelimitedlogger;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import net.jcip.annotations.ThreadSafe;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceArray;
