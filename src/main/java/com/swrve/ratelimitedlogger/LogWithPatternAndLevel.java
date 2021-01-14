@@ -92,6 +92,7 @@ public class LogWithPatternAndLevel {
         incrementStats();
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean isRateLimited() {
 
         // note: this method is not synchronized, for performance.  If we exceed the maxRate, we will start checking
