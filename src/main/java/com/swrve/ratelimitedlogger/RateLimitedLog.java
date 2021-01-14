@@ -56,7 +56,15 @@ public class RateLimitedLog implements Logger {
      */
     static final int MAX_PATTERNS_PER_LOG = 1000;
 
-    private final ConcurrentHashMap<String, RateLimitedLogWithPattern> knownPatterns
+    /**
+     * Impose a limit of this many characters in the knownPattern hash; this helps avoid
+     * a situation where an already-interpolated string is accidentally being used as a
+     * pattern, and some very large strings have been interpolated into it, resulting in
+     * high memory consumption and GC pressure.
+     */
+    private static final int MAX_PATTERN_LENGTH = 8192;
+
+    final ConcurrentHashMap<String, RateLimitedLogWithPattern> knownPatterns
             = new ConcurrentHashMap<>();
 
     private final Logger logger;
@@ -73,6 +81,7 @@ public class RateLimitedLog implements Logger {
     }
 
     // package-local ctor called by the Builder
+    @SuppressWarnings("SameParameterValue")
     RateLimitedLog(Logger logger, RateLimitedLogWithPattern.RateAndPeriod rateAndPeriod, Stopwatch stopwatch, CounterMetric stats, Registry registry) {
         this.logger = logger;
         this.rateAndPeriod = rateAndPeriod;
@@ -392,13 +401,18 @@ public class RateLimitedLog implements Logger {
      * Note that the string is the sole key used, so the same string cannot be reused with differing period
      * settings; any periods which differ from the first one used are ignored.
      *
+     * The first 8192 characters of the message are used as the key, so if an extremely long log pattern
+     * is used, with differences only after that threshold, they will share the same rate limiter.
+     *
      * @throws IllegalStateException if we exceed the limit on number of RateLimitedLogWithPattern objects
      * in any one period; if this happens, it's probable that an already-interpolated string is
      * accidentally being used as a log pattern.
      */
     public RateLimitedLogWithPattern get(final String message) {
+        String key = (message.length() > MAX_PATTERN_LENGTH) ? message.substring(0, MAX_PATTERN_LENGTH) : message;
+
         // fast path: hopefully we can do this without creating a Supplier object
-        RateLimitedLogWithPattern got = knownPatterns.get(message);
+        RateLimitedLogWithPattern got = knownPatterns.get(key);
         if (got != null) {
             return got;
         }
@@ -410,7 +424,7 @@ public class RateLimitedLog implements Logger {
 
         // slow path: create a RateLimitedLogWithPattern
         RateLimitedLogWithPattern newValue = new RateLimitedLogWithPattern(message, rateAndPeriod, registry, stats, stopwatch, logger);
-        RateLimitedLogWithPattern oldValue = knownPatterns.putIfAbsent(message, newValue);
+        RateLimitedLogWithPattern oldValue = knownPatterns.putIfAbsent(key, newValue);
         if (oldValue != null) {
             return oldValue;
         } else {

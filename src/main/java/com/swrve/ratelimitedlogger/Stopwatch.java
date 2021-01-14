@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Stopwatch {
 
-    private long startTime = 0L;
+    private long startTime;
 
     public Stopwatch() {
         startTime = System.nanoTime();

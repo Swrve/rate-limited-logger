@@ -314,6 +314,34 @@ public class RateLimitedLogTest {
             rateLimitedLog.info("cache " + i);
             assertThat(logger.getInfoLastMessage().get(), equalTo("cache " + i)); // no loss
         }
+
+        // check that the cache was wiped once it filled up
+        assertThat(rateLimitedLog.knownPatterns.size(), equalTo(1));
+    }
+
+    // Ensure that the out-of-cache-capacity logic doesn't lose data.
+    @Test
+    public void overlongKeyStrings() {
+        MockLogger logger = new MockLogger();
+        final AtomicLong mockTime = new AtomicLong(0L);
+
+        RateLimitedLog rateLimitedLog = RateLimitedLog.withRateLimit(logger)
+                .maxRate(1).every(Duration.ofMillis(10))
+                .withStopwatch(createStopwatch(mockTime))
+                .build();
+
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < 400; i++) {
+            s.append("this string is too long for the cache "); // 38 chars
+        }
+        String overLongString = s.toString();
+
+        rateLimitedLog.info(overLongString + " 1");
+        rateLimitedLog.info(overLongString + " 2");
+
+        // check they shared the same rate limit
+        assertThat(logger.getInfoLastMessage().get(), equalTo(overLongString + " 1"));
+        assertThat(rateLimitedLog.knownPatterns.size(), equalTo(1));
     }
 
     private Stopwatch createStopwatch(final AtomicLong mockTime) {

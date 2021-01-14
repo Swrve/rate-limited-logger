@@ -71,6 +71,7 @@ class Registry {
                 try {
                     resetAllCounters(finalLogLinesForPeriod);
                 } catch (Exception e) {
+                    //noinspection AccessToStaticFieldLockedOnInstance
                     logger.warn("failed to reset counters: " + e, e);
                     // but carry on in the next iteration
                 }
