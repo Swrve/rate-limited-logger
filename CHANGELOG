@@ -1,4 +1,14 @@
 
+== 2.0.2 ==
+
+* Avert risk of GC pressure caused by long accidentally-interpolated log strings.
+
+* Switch from (obsolete) FindBugs to SpotBugs.
+
+* Switch from JSR-305 javax findbugs/spotbugs annotations back to the originals,
+due to licensing issues with the javax namespace.
+
+
 == 2.0.1 ==
 
 * add a shutdownHook to ensure accumulated suppressions are flushed prior to process exit.
