@@ -315,7 +315,8 @@ public class RateLimitedLogTest {
             assertThat(logger.getInfoLastMessage().get(), equalTo("cache " + i)); // no loss
         }
 
-        assertThat(rateLimitedLog.knownPatterns.size(), equalTo(RateLimitedLog.MAX_PATTERNS_PER_LOG));
+        // check that the cache was wiped once it filled up
+        assertThat(rateLimitedLog.knownPatterns.size(), equalTo(1));
     }
 
     // Ensure that the out-of-cache-capacity logic doesn't lose data.
